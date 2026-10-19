@@ -38,7 +38,7 @@ export default function NewApplication() {
   const [app, setApp] = useState<any>(null);
   const [company, setCompany] = useState<any>(null);
   const [egrul, setEgrul] = useState<any>(null);
-  const [form, setForm] = useState<any>({ purpose: "", amount: 1_000_000, term_months: 12, purpose_text: "", financials: {}, collateral: {}, consents: {}, contact: {} });
+  const [form, setForm] = useState<any>({ purpose: new URLSearchParams(window.location.search).get("purpose") || "", amount: 1_000_000, term_months: 12, purpose_text: "", financials: {}, collateral: {}, consents: {}, contact: {} });
   const [saved, setSaved] = useState("");
   const [err, setErr] = useState("");
   const [busy, setBusy] = useState(false);

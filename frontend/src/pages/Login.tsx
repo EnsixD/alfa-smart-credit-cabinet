@@ -1,4 +1,4 @@
-import { Briefcase, Building2, Calculator, Car, Check, Coffee, PhoneOff, Factory, Gavel, KeyRound, Laptop, Lock, ShieldCheck, Sparkles, Store, User, UserCog, X } from "lucide-react";
+import { Briefcase, Building2, Calculator, Car, CircleCheck, Coffee, FileText, Landmark, Loader, PhoneOff, Timer, Factory, Gavel, KeyRound, Laptop, Lock, ShieldCheck, Sparkles, Store, User, UserCog, X } from "lucide-react";
 import { useLayoutEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../api";
@@ -40,39 +40,36 @@ export default function Login() {
         .from(".mask > span", { yPercent: 110, duration: 0.9, stagger: 0.08 }, 0.2)
         .from(".hero-line", { y: 20, autoAlpha: 0, duration: 0.7 }, "-=0.5")
         .from(".hero-stats > div", { y: 20, autoAlpha: 0, stagger: 0.08, duration: 0.5 }, "-=0.4")
-        .from(".mock", { y: 60, rotate: 4, autoAlpha: 0, duration: 1 }, 0.4)
-        .from(".tile", { y: 24, autoAlpha: 0, stagger: 0.12, duration: 0.7 }, 0.8)
+        .fromTo(".mock", { clipPath: "inset(0% 0% 100% 0% round 22px)", y: 16 }, { clipPath: "inset(0% 0% 0% 0% round 22px)", y: 0, duration: 1.1, ease: "power3.inOut" }, 0.3)
+        .fromTo(".mock > *", { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, stagger: 0.06, duration: 0.5, ease: "power2.out" }, 0.8)
+        .fromTo(".tile", { clipPath: "inset(0% 0% 100% 0% round 18px)" }, { clipPath: "inset(0% 0% 0% 0% round 18px)", stagger: 0.15, duration: 0.9, ease: "power3.inOut" }, 0.7)
         .from(".login-card > *", { y: 18, autoAlpha: 0, stagger: 0.07, duration: 0.5 }, 0.25);
 
-      // 2. Бесконечный цикл: заявка проходит конвейер внутри карточки
+      // 2. Цикл: заявка проходит конвейер внутри карточки (только прозрачность — текст не сдвигается)
+      const STEPS = ["Проверяем полноту данных", "Сверяем с ЕГРЮЛ и ФНС", "Запрашиваем бюро историй", "Скоринг: рейтинг A", "Формируем решение", "Одобрено за 47 секунд"];
       const sum = { v: 0 };
       const sumEl = document.querySelector<HTMLElement>(".m-sum");
-      const statuses = gsap.utils.toArray<HTMLElement>(".m-text span");
-      gsap.set(statuses, { yPercent: 120, autoAlpha: 0 });
-      const loop = gsap.timeline({ repeat: -1, repeatDelay: 1.2, delay: 1.2 });
-      loop.set(".m-bars b", { scaleX: 0 }).set(".m-ok", { scale: 0 }).set(".m-checks em", { autoAlpha: 0 }).set(sum, { v: 0 })
+      const txt = document.querySelector<HTMLElement>(".m-text");
+      const stepEl = document.querySelector<HTMLElement>(".m-step");
+      const swap = (i: number) => { if (txt) txt.textContent = STEPS[i]; if (stepEl) stepEl.textContent = `Этап ${i + 1} из ${STEPS.length}`; };
+      const loop = gsap.timeline({ repeat: -1, repeatDelay: 1.2, delay: 1.4 });
+      loop.set(".m-bars b", { scaleX: 0 }).set(".m-check", { autoAlpha: 0.25 }).set(".m-badge.ok", { autoAlpha: 0 }).set(".m-badge.wip", { autoAlpha: 1 })
+        .set(sum, { v: 0 }).call(swap, [0]).set(".m-line", { autoAlpha: 1 })
         .to(sum, { v: 2000000, duration: 1.2, ease: "power2.out", onUpdate: () => { if (sumEl) sumEl.textContent = Math.round(sum.v).toLocaleString("ru-RU") + " ₽"; } });
-      statuses.forEach((el, i) => {
-        loop.fromTo(el, { yPercent: 120, autoAlpha: 0 }, { yPercent: 0, autoAlpha: 1, duration: 0.4, ease: "power3.out" }, i === 0 ? "-=0.3" : ">")
-          .to(`.m-bars i:nth-child(${i + 1}) b`, { scaleX: 1, duration: 0.6, ease: "power2.inOut" }, "<")
-          .to(`.m-checks div:nth-child(${Math.min(i + 1, 3)}) em`, { autoAlpha: i < 3 ? 1 : 1, duration: 0.2 }, "<0.3");
-        if (i < statuses.length - 1) loop.to(el, { yPercent: -120, autoAlpha: 0, duration: 0.35, ease: "power3.in" }, "+=0.55");
+      STEPS.forEach((_, i) => {
+        if (i > 0) loop.to(".m-line", { autoAlpha: 0, duration: 0.2 }, "+=0.55").call(swap, [i]).to(".m-line", { autoAlpha: 1, duration: 0.25 });
+        loop.to(`.m-bars i:nth-child(${i + 1}) b`, { scaleX: 1, duration: 0.6, ease: "power2.inOut" }, "<");
+        if (i >= 1 && i <= 3) loop.to(`.m-checks > div:nth-child(${i}) .m-check`, { autoAlpha: 1, duration: 0.3 }, "<0.2");
       });
-      loop.to(".m-ok", { scale: 1, duration: 0.5, ease: "back.out(3)" }, "<0.2")
-        .to(".m-dot", { backgroundColor: "#0aa45a", duration: 0.3 }, "<")
-        .to({}, { duration: 1.6 })
-        .to(statuses[statuses.length - 1], { autoAlpha: 0, duration: 0.3 })
-        .to(".m-dot", { backgroundColor: "#ef3124", duration: 0.2 }, "<");
+      loop.to(".m-badge.wip", { autoAlpha: 0, duration: 0.2 }, "<").to(".m-badge.ok", { autoAlpha: 1, duration: 0.3 }, "<").to({}, { duration: 1.8 });
 
-      // 3. Фоновые движения
-      // плитки: таймер решения и «без звонков» — анимация внутри статичных блоков
+      // 3. Плитки: таймер решения и «без звонков»
       const t = { m: 0 };
       const minEl = document.querySelector<HTMLElement>(".t-min");
       gsap.timeline({ repeat: -1, repeatDelay: 1.5, delay: 1.4 })
         .fromTo(".rt-fg", { strokeDashoffset: 170 }, { strokeDashoffset: 0, duration: 2.4, ease: "power1.inOut" })
-        .fromTo(t, { m: 0 }, { m: 5, duration: 2.4, ease: "power1.inOut", onUpdate: () => { if (minEl) minEl.textContent = String(Math.round(t.m)); } }, "<")
-        .to(".tile:first-child", { boxShadow: "0 0 0 1px rgba(239,49,36,.6)", duration: 0.3, yoyo: true, repeat: 1 });
-      gsap.fromTo(".p-ring", { scale: 0.6, autoAlpha: 0.7 }, { scale: 1.9, autoAlpha: 0, duration: 2, stagger: 1, repeat: -1, ease: "power1.out" });
+        .fromTo(t, { m: 0 }, { m: 5, duration: 2.4, ease: "power1.inOut", onUpdate: () => { if (minEl) minEl.textContent = String(Math.round(t.m)); } }, "<");
+      gsap.fromTo(".p-ring", { scale: 1, autoAlpha: 0.5 }, { scale: 1.6, autoAlpha: 0, duration: 2, stagger: 1, repeat: -1, ease: "power1.out" });
       gsap.to(".grid-svg .accent", { strokeDashoffset: -400, strokeDasharray: "60 340", duration: 6, repeat: -1, ease: "none" });
     }, page);
     return () => ctx.revert();
@@ -130,28 +127,28 @@ export default function Login() {
 
         <div className="hero-panel" aria-hidden>
         <div className="mock">
-          <div className="m-ok"><Check size={26} color="#fff" strokeWidth={3} /></div>
-          <div className="m-top"><span>Заявка CR-2610-00042</span><span>Экспресс-кредит</span></div>
+          <div className="m-top">
+            <span><FileText size={14} /> CR-2610-00042</span>
+            <span className="m-badges"><span className="m-badge wip"><Loader size={12} /> В работе</span><span className="m-badge ok"><CircleCheck size={12} /> Одобрено</span></span>
+          </div>
           <div className="m-sum">0 ₽</div>
-          <div className="m-sub">на 12 месяцев · закупка товара</div>
+          <div className="m-sub">Экспресс-кредит · 12 месяцев</div>
           <div className="m-bars">{[0, 1, 2, 3, 4, 5].map((i) => <i key={i}><b /></i>)}</div>
-          <div className="m-status"><span className="m-dot" /><span className="m-text">
-            {["Проверяем полноту данных", "Сверяем с ЕГРЮЛ и ФНС", "Запрос в бюро историй", "Скоринг: рейтинг A", "Формируем решение", "Одобрено за 47 секунд"].map((t) => <span key={t}>{t}</span>)}
-          </span></div>
+          <div className="m-line"><div className="m-step">Этап 1 из 6</div><div className="m-text">Проверяем полноту данных</div></div>
           <div className="m-checks">
-            <div><span>ЕГРЮЛ / ЕГРИП</span><em>✓ действующая</em></div>
-            <div><span>ФНС «Прозрачный бизнес»</span><em>✓ без долгов</em></div>
-            <div><span>Бюро кредитных историй</span><em>✓ без просрочек</em></div>
+            <div><Building2 size={15} /><span>ЕГРЮЛ / ЕГРИП</span><CircleCheck size={16} className="m-check" /></div>
+            <div><Landmark size={15} /><span>ФНС «Прозрачный бизнес»</span><CircleCheck size={16} className="m-check" /></div>
+            <div><ShieldCheck size={15} /><span>Бюро кредитных историй</span><CircleCheck size={16} className="m-check" /></div>
           </div>
         </div>
         <div className="tiles">
           <div className="tile">
-            <svg className="ring-timer" viewBox="0 0 64 64"><circle cx="32" cy="32" r="27" className="rt-bg" /><circle cx="32" cy="32" r="27" className="rt-fg" /></svg>
-            <div><div className="t-big"><span className="t-min">0</span> мин</div><div className="t-sub">до автоматического решения</div></div>
+            <div className="t-ico"><svg className="ring-timer" viewBox="0 0 64 64"><circle cx="32" cy="32" r="27" className="rt-bg" /><circle cx="32" cy="32" r="27" className="rt-fg" /></svg><Timer size={16} /></div>
+            <div><div className="t-big"><span className="t-min">0</span> мин</div><div className="t-sub">до решения</div></div>
           </div>
           <div className="tile">
-            <div className="pulse"><span className="p-ring" /><span className="p-ring r2" /><span className="p-core"><PhoneOff size={18} /></span></div>
-            <div><div className="t-big">0 звонков</div><div className="t-sub">всё внутри кабинета</div></div>
+            <div className="t-ico"><span className="p-ring" /><span className="p-ring" /><PhoneOff size={16} /></div>
+            <div><div className="t-big">0 звонков</div><div className="t-sub">всё в кабинете</div></div>
           </div>
         </div>
         </div>

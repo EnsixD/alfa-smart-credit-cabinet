@@ -31,7 +31,7 @@ function Notifications() {
   }, [open]);
   const unread = items.filter((n) => !n.read).length;
   return (
-    <>
+    <div className="notif-wrap">
       <button className="icon-btn" title="Уведомления" onClick={() => { setOpen(!open); if (!open && unread) api("/api/notifications/read", { method: "POST" }).then(load); }}>
         <Bell />{unread > 0 && <span className="dot">{unread}</span>}
       </button>
@@ -47,7 +47,7 @@ function Notifications() {
           ))}
         </div>
       )}
-    </>
+    </div>
   );
 }
 
