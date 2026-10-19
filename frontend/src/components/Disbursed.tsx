@@ -1,12 +1,31 @@
-import { ArrowRight, CalendarDays, CircleCheck, FileText, Home, Percent, Wallet, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import {
+  ArrowRight,
+  CalendarDays,
+  CircleCheck,
+  FileText,
+  Home,
+  Percent,
+  Wallet,
+  X,
+  RotateCcw,
+} from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
-import { dt, money, months } from "../api";
+import BrandField from "./BrandField";
+import { motion } from "motion/react";
+import { api, dt, money, months } from "../api";
 import { AnimatedNumber } from "../anim";
 
 const rub = (v: number) => Math.round(v).toLocaleString("ru-RU") + " ₽";
-const STAGE_STATUSES = [["DRAFT"], ["SUBMITTED", "DATA_CHECK", "NEEDS_INFO"], ["ENRICHMENT", "SCORING", "DECISION", "MANUAL_REVIEW", "ESCALATED"], ["APPROVED", "COUNTER_OFFER"], ["SIGNING"], ["DISBURSING", "DISBURSED"]];
+const STAGE_STATUSES = [
+  ["DRAFT"],
+  ["SUBMITTED", "DATA_CHECK", "NEEDS_INFO"],
+  ["ENRICHMENT", "SCORING", "DECISION", "MANUAL_REVIEW", "ESCALATED"],
+  ["APPROVED", "COUNTER_OFFER"],
+  ["SIGNING"],
+  ["DISBURSING", "DISBURSED"],
+];
 
 function firstPayment(app: any) {
   const d = new Date(app.signing?.signed_at || app.updated_at);
@@ -15,10 +34,28 @@ function firstPayment(app: any) {
 }
 
 /** Полноэкранная анимация зачисления: красный круг раскрывается из центра на весь экран. */
-export function DisburseOverlay({ app, onClose }: { app: any; onClose: () => void }) {
+export function DisburseOverlay({
+  app,
+  onClose,
+}: {
+  app: any;
+  onClose: () => void;
+}) {
   const nav = useNavigate();
   const [closing, setClosing] = useState(false);
-  const close = (after?: () => void) => { setClosing(true); setTimeout(() => { onClose(); after?.(); }, 380); };
+  const modal = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const previous = document.activeElement as HTMLElement | null;
+    modal.current?.querySelector<HTMLButtonElement>("button")?.focus();
+    return () => previous?.focus();
+  }, []);
+  const close = (after?: () => void) => {
+    setClosing(true);
+    setTimeout(() => {
+      onClose();
+      after?.();
+    }, 380);
+  };
   useEffect(() => {
     const k = (e: KeyboardEvent) => e.key === "Escape" && close();
     window.addEventListener("keydown", k);
@@ -27,25 +64,80 @@ export function DisburseOverlay({ app, onClose }: { app: any; onClose: () => voi
   }, []);
   const o = app.offer;
   return createPortal(
-    <div className={"payout" + (closing ? " closing" : "")} role="dialog" aria-modal="true">
-      <div className="payout-burst" />
-      <div className="payout-rings"><i /><i /><i /></div>
-      <button className="payout-x" onClick={() => close()} aria-label="Закрыть"><X size={20} /></button>
+    <div
+      className={"payout" + (closing ? " closing" : "")}
+      ref={modal}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Средства зачислены"
+      onKeyDown={(e) => {
+        if (e.key !== "Tab") return;
+        const buttons = Array.from(e.currentTarget.querySelectorAll("button"));
+        const first = buttons[0],
+          last = buttons[buttons.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        }
+        if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }}
+    >
+      <BrandField className="vf-payout-field" bright />
+      <button className="payout-x" onClick={() => close()} aria-label="Закрыть">
+        <X size={20} />
+      </button>
       <div className="payout-body">
-        <div className="payout-check"><svg viewBox="0 0 24 24" width="56" height="56"><path d="M5 12.5l4.2 4.2L19 7" /></svg></div>
-        <div className="payout-eyebrow">Средства зачислены на расчётный счёт</div>
-        <div className="payout-sum">+<AnimatedNumber value={o.amount} format={rub} duration={1.6} /></div>
-        <div className="payout-sub">{app.company.name} · договор {app.signing?.contract_number}</div>
+        <div className="payout-check">
+          <svg viewBox="0 0 24 24" width="56" height="56">
+            <path d="M5 12.5l4.2 4.2L19 7" />
+          </svg>
+        </div>
+        <div className="payout-eyebrow">
+          Средства зачислены на расчётный счёт
+        </div>
+        <div className="payout-sum">
+          +<AnimatedNumber value={o.amount} format={rub} duration={1.6} />
+        </div>
+        <div className="payout-sub">
+          {app.company.name} · договор {app.signing?.contract_number}
+        </div>
         <div className="payout-facts">
-          <div><span>Ежемесячный платёж</span><b>{money(o.monthly_payment)}</b></div>
-          <div><span>Ставка</span><b>{o.rate}%</b></div>
-          <div><span>Срок</span><b>{months(o.term_months)}</b></div>
-          <div><span>Первый платёж</span><b>{firstPayment(app)}</b></div>
+          <div>
+            <span>Ежемесячный платёж</span>
+            <b>{money(o.monthly_payment)}</b>
+          </div>
+          <div>
+            <span>Ставка</span>
+            <b>{o.rate}%</b>
+          </div>
+          <div>
+            <span>Срок</span>
+            <b>{months(o.term_months)}</b>
+          </div>
+          <div>
+            <span>Первый платёж</span>
+            <b>{firstPayment(app)}</b>
+          </div>
         </div>
         <div className="payout-actions">
-          <button className="btn payout-primary" onClick={() => close(() => nav("/cabinet/loans?schedule=1"))}><CalendarDays size={18} /> График платежей</button>
-          <button className="btn payout-ghost" onClick={() => close()}><FileText size={18} /> Детали заявки</button>
-          <button className="btn payout-ghost" onClick={() => close(() => nav("/cabinet"))}><Home size={18} /> На главную</button>
+          <button
+            className="btn payout-primary"
+            onClick={() => close(() => nav("/cabinet/loans"))}
+          >
+            <CalendarDays size={18} /> График платежей
+          </button>
+          <button className="btn payout-ghost" onClick={() => close()}>
+            <FileText size={18} /> Детали заявки
+          </button>
+          <button
+            className="btn payout-ghost"
+            onClick={() => close(() => nav("/cabinet"))}
+          >
+            <Home size={18} /> На главную
+          </button>
         </div>
       </div>
     </div>,
@@ -54,40 +146,108 @@ export function DisburseOverlay({ app, onClose }: { app: any; onClose: () => voi
 }
 
 /** Итоговый экран выданной заявки: всё на одном экране, без прокрутки. */
-export function DisbursedView({ app, onReplay, onDetails }: { app: any; onReplay: () => void; onDetails: () => void }) {
+export function DisbursedView({
+  app,
+  onReplay,
+  onDetails,
+}: {
+  app: any;
+  onReplay: () => void;
+  onDetails: () => void;
+}) {
   const nav = useNavigate();
   const o = app.offer;
-  const at = (codes: string[]) => [...app.timeline].reverse().find((t: any) => codes.includes(t.to_status))?.created_at;
+  const at = (codes: string[]) =>
+    [...app.timeline].reverse().find((t: any) => codes.includes(t.to_status))
+      ?.created_at;
+  const openSchedule = async () => {
+    const company = await api("/api/company");
+    const loan = company.loans.find(
+      (l: any) => String(l.application_id) === String(app.id),
+    );
+    nav(loan ? `/cabinet/loans/${loan.id}` : "/cabinet/loans");
+  };
   return (
-    <div className="done-page">
-      <section className="done-hero">
-        <div className="done-glow" />
-        <div className="done-top">
-          <div className="done-check"><CircleCheck size={28} /></div>
-          <div><div className="eyebrow" style={{ color: "rgba(255,255,255,.7)", margin: 0 }}>Заявка {app.number} · {app.product_name}</div><div className="done-title">Деньги на счёте</div></div>
+    <div className="vx-issued">
+      <section className="vx-issued-main">
+        <div className="vx-issued-field" aria-hidden="true">
+          <BrandField />
         </div>
-        <div className="done-sum">{money(o.amount)}</div>
-        <div className="done-facts">
-          <div><Wallet size={18} /><span>Платёж в месяц</span><b>{money(o.monthly_payment)}</b></div>
-          <div><Percent size={18} /><span>Ставка</span><b>{o.rate}%</b></div>
-          <div><CalendarDays size={18} /><span>Первый платёж</span><b>{firstPayment(app)}</b></div>
-          <div><FileText size={18} /><span>Договор</span><b>{app.signing?.contract_number}</b></div>
-        </div>
-        <div className="done-actions">
-          <button className="btn done-primary" onClick={() => nav("/cabinet/loans?schedule=1")}>График платежей <ArrowRight size={16} /></button>
-          <button className="btn done-ghost" onClick={onDetails}>Проверки и история</button>
-          <button className="btn done-ghost" onClick={onReplay}>Показать зачисление ещё раз</button>
+        <div className="vx-issued-content">
+          <div className="vx-issued-check">
+            <CircleCheck size={30} />
+          </div>
+          <span className="vx-eyebrow">Готово. Можно действовать.</span>
+          <h1>
+            Деньги уже
+            <br />
+            работают на вас.
+          </h1>
+          <p>Зачислено на расчётный счёт компании</p>
+          <div className="vx-issued-sum">
+            <AnimatedNumber value={o.amount} format={money} duration={1.1} />
+          </div>
+          <span className="vx-issued-company">{app.company.name}</span>
+          <div className="vx-issued-facts">
+            <div>
+              <span>Платёж в месяц</span>
+              <b>{money(o.monthly_payment)}</b>
+            </div>
+            <div>
+              <span>Ставка</span>
+              <b>{o.rate}%</b>
+            </div>
+            <div>
+              <span>Первый платёж</span>
+              <b>{firstPayment(app)}</b>
+            </div>
+            <div>
+              <span>Договор</span>
+              <b>{app.signing?.contract_number}</b>
+            </div>
+          </div>
+          <div className="vx-issued-actions">
+            <button className="st-button" onClick={openSchedule}>
+              Открыть график <ArrowRight size={18} />
+            </button>
+            <button className="vx-secondary" onClick={onDetails}>
+              Проверки и история
+            </button>
+            <button
+              className="vx-replay"
+              onClick={onReplay}
+              aria-label="Повторить анимацию зачисления"
+            >
+              <RotateCcw size={18} />
+            </button>
+          </div>
         </div>
       </section>
-      <aside className="done-steps">
-        <div className="eyebrow">Путь заявки</div>
-        <h2 style={{ margin: "0 0 6px" }}>Все этапы пройдены</h2>
+      <aside className="vx-issued-route">
+        <span className="vx-eyebrow">Путь к результату</span>
+        <h2>Всё получилось.</h2>
+        <p>Заявка {app.number}</p>
         <ol>
           {app.status.stages.map((s: string, i: number) => (
-            <li key={s}><span className="ds-dot"><CircleCheck size={16} /></span><div><b>{s}</b><small>{dt(at(STAGE_STATUSES[i]))}</small></div></li>
+            <motion.li
+              key={s}
+              initial={{ opacity: 0, x: 12 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: i * 0.07, duration: 0.4 }}
+            >
+              <CircleCheck size={20} />
+              <div>
+                <b>{s}</b>
+                <small>{dt(at(STAGE_STATUSES[i]))}</small>
+              </div>
+            </motion.li>
           ))}
         </ol>
-        <div className="ds-foot"><span>{months(o.term_months)} · {o.product_name}</span></div>
+        <div className="vx-issued-foot">
+          {months(o.term_months)}
+          <br />
+          {o.product_name}
+        </div>
       </aside>
     </div>
   );

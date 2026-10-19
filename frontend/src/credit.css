@@ -1,0 +1,864 @@
+/* Credit exploration and contract detail pages. */
+.cr-public {
+  padding-top: 32px;
+  padding-bottom: 70px;
+}
+.cr-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 44px;
+  text-decoration: none;
+  color: #73737b;
+  font-size: 14px;
+  margin-bottom: 29px;
+}
+.cr-back:hover {
+  color: #df3024;
+}
+.cr-product-hero {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 9%;
+  align-items: center;
+  padding: 20px 0 52px;
+}
+.cr-product-hero h1 {
+  font-size: clamp(42px, 4.5vw, 68px);
+  line-height: 1.05;
+  letter-spacing: -0.065em;
+  font-weight: 500;
+  margin: 20px 0;
+}
+.cr-product-hero p {
+  font-size: 17px;
+  line-height: 1.8;
+  color: #696970;
+  max-width: 620px;
+  margin-bottom: 26px;
+}
+.cr-product-key.spotlight-card {
+  padding: 34px;
+  background: #fff;
+  border: 1px solid #e4e4e8;
+  border-radius: 20px;
+  box-shadow: none;
+  min-height: 260px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+}
+.cr-product-key > span:not([aria-hidden]) {
+  font-size: 14px;
+  color: #75757b;
+}
+.cr-product-key > b {
+  font-size: clamp(30px, 3.2vw, 46px);
+  letter-spacing: -0.055em;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.cr-product-key > div {
+  display: flex;
+  gap: 30px;
+  font-size: 13px;
+  color: #777780;
+}
+.cr-product-key > div > span {
+  display: grid;
+  gap: 7px;
+}
+.cr-product-key strong {
+  font-size: 20px;
+  color: #303038;
+  font-weight: 500;
+}
+.cr-product-key > svg {
+  position: absolute;
+  right: 30px;
+  top: 28px;
+  color: #ef3124;
+}
+.cr-product-rules {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  padding: 28px 0;
+  border-top: 1px solid #dddde2;
+  border-bottom: 1px solid #dddde2;
+}
+.cr-product-rules > div {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 9px 13px;
+  padding-right: 12px;
+}
+.cr-product-rules svg {
+  grid-column: 1;
+  grid-row: 1/3;
+  color: #ef3124;
+}
+.cr-product-rules b {
+  font-size: 16px;
+  font-weight: 550;
+  grid-column: 2;
+}
+.cr-product-rules span {
+  font-size: 14px;
+  color: #72727a;
+  grid-column: 2;
+  line-height: 1.65;
+}
+.cr-calculator {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12%;
+  padding: 75px 0;
+}
+.cr-calculator h2 {
+  font-size: 44px;
+  letter-spacing: -0.055em;
+  line-height: 1.1;
+  margin: 18px 0;
+}
+.cr-calculator p {
+  font-size: 16px;
+  line-height: 1.75;
+  color: #73737b;
+  max-width: 420px;
+}
+.cr-sliders {
+  display: grid;
+  gap: 25px;
+}
+.cr-sliders label > span {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #777780;
+  margin-bottom: 13px;
+}
+.cr-sliders label b {
+  font-size: 21px;
+  color: #222229;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+.cr-sliders input {
+  width: 100%;
+  accent-color: #ef3124;
+  cursor: pointer;
+  height: 28px;
+}
+.cr-sliders small {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #8b8b94;
+  margin-top: 3px;
+}
+.cr-calculated {
+  padding: 23px;
+  border-radius: 12px;
+  background: #fff0ed;
+  display: grid;
+  gap: 11px;
+  color: #aa443d;
+}
+.cr-calculated > span {
+  font-size: 13px;
+}
+.cr-calculated > b {
+  font-size: 38px;
+  color: #d82c20;
+  letter-spacing: -0.05em;
+  font-weight: 500;
+}
+.cr-schedule {
+  padding: 32px;
+  background: white;
+  border: 1px solid #e3e3e8;
+  border-radius: 18px;
+  margin: 0 0 35px;
+}
+.cr-schedule > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+.cr-schedule h2,
+.app .cr-schedule h2 {
+  font-size: 32px;
+  letter-spacing: -0.045em;
+  margin: 12px 0 0;
+  font-weight: 500;
+}
+.cr-download {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1px solid #dddde2;
+  border-radius: 8px;
+  background: #fff;
+  color: #5a5a64;
+  font: inherit;
+  font-size: 13px;
+}
+.cr-download:hover {
+  background: #f8f8fa;
+  color: #df3024;
+}
+.cr-schedule-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  padding: 26px 0;
+  margin: 22px 0 10px;
+  border-top: 1px solid #e8e8ec;
+  border-bottom: 1px solid #e8e8ec;
+}
+.cr-schedule-summary > div {
+  display: grid;
+  gap: 10px;
+}
+.cr-schedule-summary span {
+  font-size: 13px;
+  color: #777781;
+}
+.cr-schedule-summary b {
+  font-size: 27px;
+  font-weight: 500;
+  letter-spacing: -0.045em;
+}
+.cr-schedule .st-filters {
+  margin-top: 24px;
+}
+.cr-chart-legend {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  font-size: 13px;
+  color: #75757e;
+  margin-bottom: 22px;
+}
+.cr-chart-legend > span {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.cr-chart-legend i {
+  width: 10px;
+  height: 10px;
+  background: #ef3124;
+  border-radius: 2px;
+}
+.cr-chart-legend > span:nth-child(2) i {
+  background: #f9b0a7;
+}
+.cr-chart-legend small {
+  margin-left: auto;
+  color: #9797a0;
+  font-size: 11px;
+}
+.cr-chart {
+  display: flex;
+  gap: 13px;
+  height: 235px;
+  border-bottom: 1px solid #dddde4;
+  margin-bottom: 30px;
+}
+.cr-chart-axis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-size: 10px;
+  color: #9898a2;
+  min-width: 75px;
+  text-align: right;
+  padding-bottom: 22px;
+}
+.cr-bars {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  gap: clamp(3px, 0.6vw, 11px);
+  height: 100%;
+  padding-bottom: 22px;
+  position: relative;
+  min-width: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0 69px,
+    #f2f2f5 70px 71px
+  );
+}
+.cr-bars > button {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: stretch;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  min-width: 0;
+}
+.cr-bar-stack {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border-radius: 4px 4px 0 0;
+  overflow: hidden;
+  opacity: 0.75;
+  transition:
+    opacity 0.2s,
+    filter 0.2s;
+  min-height: 5px;
+}
+.cr-bars > button:hover .cr-bar-stack,
+.cr-bars > button.chosen .cr-bar-stack {
+  opacity: 1;
+  filter: saturate(1.4);
+  box-shadow: 0 0 0 2px #ef3124;
+}
+.cr-bar-interest {
+  display: block;
+  background: #f9b0a7;
+}
+.cr-bar-principal {
+  display: block;
+  background: #ef3124;
+}
+.cr-bars > button > small {
+  position: absolute;
+  bottom: -19px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  color: #8b8b96;
+}
+.cr-month-detail {
+  display: grid;
+  grid-template-columns: 1.5fr repeat(4, 1fr);
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  background: #f6f6f8;
+  border: 1px solid #ededf1;
+  border-radius: 11px;
+}
+.cr-month-detail > div:not(.cr-month-controls) {
+  display: grid;
+  gap: 9px;
+}
+.cr-month-detail span {
+  font-size: 11px;
+  color: #7e7e8a;
+}
+.cr-month-detail b {
+  font-size: 15px;
+  font-weight: 550;
+  color: #35353e;
+}
+.cr-month-controls {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+.cr-month-controls > div {
+  display: grid;
+  gap: 8px;
+  white-space: nowrap;
+}
+.cr-month-controls > button {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 36px;
+  border: 1px solid #dcdce4;
+  border-radius: 5px;
+  background: white;
+  color: #666674;
+}
+.cr-month-controls > button:disabled {
+  opacity: 0.3;
+}
+.cr-disclaimer {
+  font-size: 12px;
+  line-height: 1.7;
+  color: #92929c;
+  margin: 22px 0 0;
+}
+.cr-table-wrap {
+  width: 100%;
+  overflow: auto;
+}
+.cr-table-wrap > table {
+  width: 100%;
+  border-collapse: collapse;
+  white-space: nowrap;
+  font-size: 13px;
+}
+.cr-table-wrap th {
+  font-weight: 500;
+  color: #8b8b98;
+  text-align: left;
+  background: #f8f8fa;
+  padding: 13px 15px;
+  border-bottom: 1px solid #e8e8ef;
+  font-size: 11px;
+}
+.cr-table-wrap td {
+  padding: 17px 15px;
+  border-bottom: 1px solid #eeeef4;
+  font-variant-numeric: tabular-nums;
+}
+.cr-table-wrap tr:hover td {
+  background: #fff6f3;
+}
+.cr-table-pages {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 22px;
+  margin-top: 20px;
+  font-size: 13px;
+  color: #8a8a96;
+}
+.cr-table-pages button {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 12px;
+  border: 1px solid #dddde5;
+  border-radius: 7px;
+  background: white;
+  color: #656574;
+  font: inherit;
+  font-size: 12px;
+  min-height: 40px;
+}
+.cr-table-pages button:disabled {
+  opacity: 0.3;
+}
+.cr-requirements {
+  padding: 30px 0;
+}
+.cr-requirements h2 {
+  font-size: 34px;
+  margin-bottom: 25px;
+}
+.cr-requirements > p {
+  font-size: 16px;
+  color: #787882;
+  line-height: 1.7;
+  max-width: 700px;
+  margin-bottom: 25px;
+}
+.cr-requirements > ul {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 15px;
+  margin-bottom: 30px;
+  font-size: 15px;
+  color: #757581;
+}
+.cr-requirements li {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+.cr-requirements li svg {
+  color: #ef3124;
+}
+.cr-empty {
+  padding: 40px;
+  border-radius: 12px;
+  background: white;
+  font-size: 16px;
+  line-height: 1.7;
+  color: #777780;
+  border: 1px solid #e5e5ea;
+}
+.cr-loan-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 23px;
+}
+.cr-loan-card {
+  display: block;
+  padding: 26px;
+  border: 2px solid #e1e1e7;
+  border-radius: 17px;
+  background: white;
+  text-decoration: none;
+  color: #1c1c22;
+  transition:
+    background 0.2s,
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+.cr-loan-card:hover,
+.cr-loan-card:focus-visible {
+  border-color: #ef3124;
+  background: #fff6f4;
+  box-shadow: 0 12px 30px -20px rgba(239, 49, 36, 0.25);
+}
+.cr-loan-card:active {
+  background: #ffe6df;
+}
+.cr-loan-card-head {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  font-size: 12px;
+  color: #9696a0;
+  margin-bottom: 28px;
+}
+.cr-loan-card-head > svg {
+  margin-left: auto;
+  color: #ef3124;
+}
+.cr-loan-icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: #fff0ec;
+  color: #ef3124;
+}
+.cr-loan-card-label {
+  font-size: 12px;
+  color: #8b8b96;
+}
+.cr-loan-card-amount {
+  display: block;
+  font-size: 37px;
+  font-weight: 500;
+  letter-spacing: -0.055em;
+  margin-top: 8px;
+}
+.cr-loan-card-data {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.2fr;
+  gap: 15px;
+  margin-top: 25px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid #e7e7ed;
+}
+.cr-loan-card-data > div {
+  display: grid;
+  gap: 9px;
+}
+.cr-loan-card-data span {
+  font-size: 11px;
+  color: #8b8b96;
+}
+.cr-loan-card-data b {
+  font-size: 16px;
+  font-weight: 550;
+}
+.cr-loan-card-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 21px;
+  font-size: 13px;
+  color: #b52c22;
+}
+.cr-loan-card-link > svg {
+  transition: transform 0.2s;
+}
+.cr-loan-card:hover .cr-loan-card-link > svg {
+  transform: translateX(4px);
+}
+.cr-loan-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+.cr-loan-heading h1 {
+  font-size: 38px;
+  font-weight: 500;
+  letter-spacing: -0.05em;
+  margin: 15px 0 12px;
+}
+.cr-loan-heading p {
+  font-size: 14px;
+  color: #8b8b96;
+}
+.cr-related {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #8b5550;
+  font-size: 13px;
+  text-decoration: none;
+}
+.cr-related:hover {
+  color: #ef3124;
+}
+.cr-loan-stats {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 28px;
+}
+.cr-loan-stats > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 15px;
+  border-radius: 13px;
+  padding: 23px;
+  background: #fff;
+  border: 1px solid #e4e4ea;
+}
+.cr-loan-stats > div > span:not([aria-hidden]) {
+  font-size: 12px;
+  color: #83838e;
+}
+.cr-loan-stats > div > b {
+  font-size: 27px;
+  font-weight: 500;
+  letter-spacing: -0.04em;
+}
+.cr-loan-stats > div > small {
+  font-size: 10px;
+  color: #9999a4;
+}
+.cr-loan-stats > .cr-loan-balance {
+  background: #ef3124 !important;
+  color: white !important;
+  border-color: #ef3124;
+  position: relative;
+  gap: 13px;
+}
+.cr-loan-balance > svg {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  opacity: 0.55;
+}
+.cr-loan-stats > .cr-loan-balance > span:not([aria-hidden]) {
+  color: #ffdbd5;
+}
+.cr-loan-stats > .cr-loan-balance > small {
+  color: #ffd2cb;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+@media (max-width: 1150px) {
+  .cr-product-hero {
+    gap: 5%;
+  }
+  .cr-product-key > b {
+    font-size: 34px;
+  }
+  .cr-product-key.spotlight-card {
+    padding: 28px;
+  }
+  .cr-loan-stats {
+    grid-template-columns: 1fr 1fr;
+  }
+  .cr-month-detail {
+    grid-template-columns: 1.4fr 1fr 1fr;
+    gap: 20px;
+  }
+  .cr-month-detail > .cr-month-controls {
+    grid-row: 1/3;
+  }
+  .cr-loan-list {
+    grid-template-columns: 1fr;
+  }
+  .cr-calculator {
+    gap: 7%;
+  }
+}
+@media (max-width: 760px) {
+  .cr-product-hero {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    padding-bottom: 35px;
+  }
+  .cr-product-hero h1 {
+    font-size: 43px;
+  }
+  .cr-product-hero p {
+    font-size: 15px;
+  }
+  .cr-product-key.spotlight-card {
+    min-height: 215px;
+    padding: 26px;
+  }
+  .cr-product-key > b {
+    font-size: 36px;
+  }
+  .cr-product-rules {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .cr-calculator {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    padding-block: 50px;
+  }
+  .cr-calculator h2 {
+    font-size: 37px;
+  }
+  .cr-calculator p {
+    font-size: 15px;
+  }
+  .cr-schedule {
+    padding: 21px 18px;
+    border-radius: 13px;
+  }
+  .cr-schedule > header {
+    flex-wrap: wrap;
+    gap: 18px;
+  }
+  .cr-schedule h2,
+  .app .cr-schedule h2 {
+    font-size: 29px;
+  }
+  .cr-schedule-summary {
+    grid-template-columns: 1fr 1fr;
+    gap: 23px 12px;
+    padding-block: 23px;
+  }
+  .cr-schedule-summary > div > span {
+    font-size: 11px;
+  }
+  .cr-schedule-summary b {
+    font-size: 23px;
+  }
+  .cr-schedule-summary > div:last-child {
+    grid-column: 1/-1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .cr-chart-legend {
+    font-size: 11px;
+    gap: 15px;
+    flex-wrap: wrap;
+  }
+  .cr-chart-legend small {
+    margin-left: 0;
+    font-size: 10px;
+    width: 100%;
+  }
+  .cr-chart {
+    height: 200px;
+    gap: 9px;
+  }
+  .cr-chart-axis {
+    font-size: 9px;
+    min-width: 58px;
+  }
+  .cr-bars {
+    gap: 3px;
+  }
+  .cr-month-detail {
+    grid-template-columns: 1fr 1fr;
+    padding: 17px;
+    gap: 18px 12px;
+  }
+  .cr-month-detail > .cr-month-controls {
+    grid-row: auto;
+    grid-column: 1/-1;
+    justify-content: space-between;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e3e3e9;
+  }
+  .cr-month-detail span {
+    font-size: 10px;
+  }
+  .cr-month-detail b {
+    font-size: 14px;
+  }
+  .cr-month-controls > div {
+    text-align: center;
+  }
+  .cr-disclaimer {
+    font-size: 11px;
+  }
+  .cr-loan-heading {
+    display: block;
+  }
+  .cr-loan-heading h1 {
+    font-size: 32px;
+  }
+  .cr-related {
+    margin-top: 19px;
+    font-size: 12px;
+  }
+  .cr-loan-stats {
+    gap: 10px;
+  }
+  .cr-loan-stats > div {
+    padding: 18px;
+    gap: 12px;
+    min-height: 135px;
+  }
+  .cr-loan-stats > div > b {
+    font-size: 23px;
+  }
+  .cr-loan-stats > .cr-loan-balance {
+    grid-column: 1/-1;
+    min-height: 155px;
+  }
+  .cr-loan-stats > div:last-child {
+    grid-column: 1/-1;
+    min-height: 110px;
+  }
+  .cr-loan-card {
+    padding: 22px;
+  }
+  .cr-loan-card-amount {
+    font-size: 34px;
+  }
+  .cr-loan-card-data {
+    gap: 13px;
+  }
+  .cr-loan-card-data b {
+    font-size: 14px;
+  }
+  .cr-loan-card-link {
+    font-size: 12px;
+  }
+  .cr-back {
+    font-size: 13px;
+    margin-bottom: 21px;
+  }
+  .cr-sliders label b {
+    font-size: 18px;
+  }
+  .cr-calculated > b {
+    font-size: 34px;
+  }
+  .cr-requirements h2 {
+    font-size: 31px;
+  }
+  .cr-requirements > p {
+    font-size: 14px;
+  }
+  .cr-product-key > b {
+    white-space: normal;
+  }
+}

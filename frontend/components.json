@@ -1,0 +1,22 @@
+{
+  "tsx": true,
+  "registries": {
+    "@react-bits": "https://reactbits.dev/r/{name}.json"
+  },
+  "style": "new-york",
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "rsc": false,
+  "tailwind": {
+    "baseColor": "neutral",
+    "config": "",
+    "cssVariables": true,
+    "css": "src/styles.css"
+  },
+  "aliases": {
+    "lib": "@/lib",
+    "hooks": "@/hooks",
+    "components": "@/components",
+    "ui": "@/components/ui",
+    "utils": "@/lib/utils"
+  }
+}

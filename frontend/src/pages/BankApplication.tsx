@@ -4,7 +4,7 @@ import { api, DOC_TYPES, dt, getToken, money, months, subscribe } from "../api";
 import { CheckRow, StatusBadge, Timeline } from "../components/Status";
 import { useReveal } from "../anim";
 import { gradeTone } from "./BankQueue";
-import { useAuth } from "../main";
+import { useAuth } from "../auth";
 
 const FACTOR_TITLES: Record<string, string> = {
   business_age_months: "Возраст бизнеса, мес.", profit_margin: "Рентабельность", revenue_trend: "Динамика выручки",

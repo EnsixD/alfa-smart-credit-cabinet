@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { api, money, months } from "../api";
 import { AnimatedNumber, useStepTransition } from "../anim";
-import { useAuth } from "../main";
+import { useAuth } from "../auth";
 import { PRODUCT_ICONS } from "./Dashboard";
 
 const STEPS = ["Основные данные", "Финансы", "Документы", "Результат"];
