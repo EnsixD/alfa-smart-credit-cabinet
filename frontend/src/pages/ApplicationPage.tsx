@@ -150,13 +150,13 @@ function Tasks({ app, reload }: { app: any; reload: () => void }) {
           {t.kind === "DOCUMENT" && (
             <label className="btn small">{busy === String(t.id) ? <Loader size={14} className="spin-ico" /> : <Upload size={14} />} Загрузить<input type="file" hidden onChange={(e) => e.target.files?.[0] && upload(t, e.target.files[0])} /></label>
           )}
-          {t.kind === "INFO" && t.created_by === "Система" && <Link className="btn small secondary" to={`/new/${app.id}`}>Исправить</Link>}
+          {t.kind === "INFO" && t.created_by === "Система" && <Link className="btn small secondary" to={`/cabinet/new/${app.id}`}>Исправить</Link>}
         </div>
       ))}
       {err && <div className="alert bad">{err}</div>}
       <div className="row">
         <button className="btn" onClick={resubmit} disabled={open.some((t: any) => t.kind === "DOCUMENT") || busy === "submit"}>Отправить повторно</button>
-        <Link className="btn ghost" to={`/new/${app.id}`}>Изменить анкету</Link>
+        <Link className="btn ghost" to={`/cabinet/new/${app.id}`}>Изменить анкету</Link>
       </div>
     </div>
   );
@@ -257,7 +257,7 @@ export default function ApplicationPage() {
             <div className="ac-head"><div className="ac-ico bad"><X size={20} /></div><div><h2>Сейчас не можем выдать кредит</h2><p className="muted small">Это не окончательно — вот что поможет</p></div></div>
             <div className="reasons">{app.decision.reasons.map((r: string) => <div key={r}><X size={15} className="neg" />{r}</div>)}</div>
             {app.decision.recommendations?.length > 0 && <div className="reasons ok">{app.decision.recommendations.map((r: string) => <div key={r}><ArrowRight size={15} className="pos" />{r}</div>)}</div>}
-            <div><Link className="btn" to="/new">Подобрать другой вариант</Link></div>
+            <div><Link className="btn" to="/cabinet/new">Подобрать другой вариант</Link></div>
           </div>
         )}
         <Details app={app} reload={reload} />

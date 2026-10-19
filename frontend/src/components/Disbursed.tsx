@@ -43,9 +43,9 @@ export function DisburseOverlay({ app, onClose }: { app: any; onClose: () => voi
           <div><span>Первый платёж</span><b>{firstPayment(app)}</b></div>
         </div>
         <div className="payout-actions">
-          <button className="btn payout-primary" onClick={() => close(() => nav("/?schedule=1"))}><CalendarDays size={18} /> График платежей</button>
+          <button className="btn payout-primary" onClick={() => close(() => nav("/cabinet/loans?schedule=1"))}><CalendarDays size={18} /> График платежей</button>
           <button className="btn payout-ghost" onClick={() => close()}><FileText size={18} /> Детали заявки</button>
-          <button className="btn payout-ghost" onClick={() => close(() => nav("/"))}><Home size={18} /> На главную</button>
+          <button className="btn payout-ghost" onClick={() => close(() => nav("/cabinet"))}><Home size={18} /> На главную</button>
         </div>
       </div>
     </div>,
@@ -74,7 +74,7 @@ export function DisbursedView({ app, onReplay, onDetails }: { app: any; onReplay
           <div><FileText size={18} /><span>Договор</span><b>{app.signing?.contract_number}</b></div>
         </div>
         <div className="done-actions">
-          <button className="btn done-primary" onClick={() => nav("/?schedule=1")}>График платежей <ArrowRight size={16} /></button>
+          <button className="btn done-primary" onClick={() => nav("/cabinet/loans?schedule=1")}>График платежей <ArrowRight size={16} /></button>
           <button className="btn done-ghost" onClick={onDetails}>Проверки и история</button>
           <button className="btn done-ghost" onClick={onReplay}>Показать зачисление ещё раз</button>
         </div>

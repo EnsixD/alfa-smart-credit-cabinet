@@ -2,19 +2,23 @@ import React, { createContext, useContext, useState } from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { clearSession, getStoredUser, saveSession, User } from "./api";
-import Layout from "./components/Layout";
+import Shell from "./components/Shell";
+import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import NewApplication from "./pages/NewApplication";
 import ApplicationPage from "./pages/ApplicationPage";
+import { ApplicationsList, DocumentsPage, LoansPage, SettingsPage } from "./pages/CabinetPages";
 import BankQueue from "./pages/BankQueue";
 import BankApplication from "./pages/BankApplication";
 import BankAnalytics from "./pages/BankAnalytics";
 import "./styles.css";
+import "./theme.css";
 
 type Auth = { user: User | null; login: (t: string, u: User) => void; logout: () => void };
 const AuthCtx = createContext<Auth>({ user: null, login: () => {}, logout: () => {} });
 export const useAuth = () => useContext(AuthCtx);
+export const homeOf = (u: User | null) => (!u ? "/login" : u.role === "CLIENT" ? "/cabinet" : "/bank");
 
 function App() {
   const [user, setUser] = useState<User | null>(getStoredUser());
@@ -28,27 +32,28 @@ function App() {
     <AuthCtx.Provider value={auth}>
       <BrowserRouter>
         <Routes>
-          <Route path="/login" element={<Login />} />
-          {!user && <Route path="*" element={<Navigate to="/login" />} />}
-          {user && (
-            <Route element={<Layout />}>
-              {isClient ? (
-                <>
-                  <Route path="/" element={<Dashboard />} />
-                  <Route path="/new" element={<NewApplication />} />
-                  <Route path="/new/:id" element={<NewApplication />} />
-                  <Route path="/applications/:id" element={<ApplicationPage />} />
-                </>
-              ) : (
-                <>
-                  <Route path="/" element={<BankQueue />} />
-                  <Route path="/bank/applications/:id" element={<BankApplication />} />
-                  <Route path="/bank/analytics" element={<BankAnalytics />} />
-                </>
-              )}
-              <Route path="*" element={<Navigate to="/" />} />
+          <Route path="/" element={<Landing />} />
+          <Route path="/login" element={user ? <Navigate to={homeOf(user)} /> : <Login />} />
+          {user && isClient && (
+            <Route path="/cabinet" element={<Shell />}>
+              <Route index element={<Dashboard />} />
+              <Route path="new" element={<NewApplication />} />
+              <Route path="new/:id" element={<NewApplication />} />
+              <Route path="applications" element={<ApplicationsList />} />
+              <Route path="applications/:id" element={<ApplicationPage />} />
+              <Route path="loans" element={<LoansPage />} />
+              <Route path="documents" element={<DocumentsPage />} />
+              <Route path="settings" element={<SettingsPage />} />
             </Route>
           )}
+          {user && !isClient && (
+            <Route path="/bank" element={<Shell />}>
+              <Route index element={<BankQueue />} />
+              <Route path="applications/:id" element={<BankApplication />} />
+              <Route path="analytics" element={<BankAnalytics />} />
+            </Route>
+          )}
+          <Route path="*" element={<Navigate to={user ? homeOf(user) : "/"} />} />
         </Routes>
       </BrowserRouter>
     </AuthCtx.Provider>

@@ -83,7 +83,7 @@ export default function BankApplication() {
   return (
     <div className="stack" ref={root}>
       <div className="page-head reveal">
-        <div><Link to="/" className="link small">← Очередь заявок</Link><h1 style={{ margin: "8px 0 4px" }}>{app.company.name}</h1>
+        <div><Link to="/bank" className="link small">← Очередь заявок</Link><h1 style={{ margin: "8px 0 4px" }}>{app.company.name}</h1>
           <div className="muted">{app.number} · {app.product_name} · <b>{money(app.amount)}</b> · {months(app.term_months)} · {app.purpose_title}</div></div>
         <div className="row"><StatusBadge status={app.status} />{!app.assigned_to && <button className="btn secondary small" onClick={() => api(`/api/bank/applications/${app.id}/assign`, { method: "POST" }).then(reload)}>Взять в работу</button>}</div>
       </div>
