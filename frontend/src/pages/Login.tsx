@@ -1,4 +1,4 @@
-import { Briefcase, Building2, Calculator, Car, Check, Coffee, Zap, Factory, Gavel, KeyRound, Laptop, Lock, ShieldCheck, Sparkles, Store, User, UserCog, X } from "lucide-react";
+import { Briefcase, Building2, Calculator, Car, Check, Coffee, PhoneOff, Factory, Gavel, KeyRound, Laptop, Lock, ShieldCheck, Sparkles, Store, User, UserCog, X } from "lucide-react";
 import { useLayoutEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../api";
@@ -41,7 +41,7 @@ export default function Login() {
         .from(".hero-line", { y: 20, autoAlpha: 0, duration: 0.7 }, "-=0.5")
         .from(".hero-stats > div", { y: 20, autoAlpha: 0, stagger: 0.08, duration: 0.5 }, "-=0.4")
         .from(".mock", { y: 60, rotate: 4, autoAlpha: 0, duration: 1 }, 0.4)
-        .from(".chip-float", { scale: 0.6, autoAlpha: 0, stagger: 0.15, duration: 0.6, ease: "back.out(2)" }, 0.9)
+        .from(".tile", { y: 24, autoAlpha: 0, stagger: 0.12, duration: 0.7 }, 0.8)
         .from(".login-card > *", { y: 18, autoAlpha: 0, stagger: 0.07, duration: 0.5 }, 0.25);
 
       // 2. Бесконечный цикл: заявка проходит конвейер внутри карточки
@@ -65,10 +65,14 @@ export default function Login() {
         .to(".m-dot", { backgroundColor: "#ef3124", duration: 0.2 }, "<");
 
       // 3. Фоновые движения
-      gsap.to(".marquee .track", { xPercent: -50, duration: 28, ease: "none", repeat: -1 });
-      gsap.to(".mock", { y: -10, duration: 3.5, yoyo: true, repeat: -1, ease: "sine.inOut" });
-      gsap.to(".chip-float.c1", { y: 8, x: -4, duration: 2.8, yoyo: true, repeat: -1, ease: "sine.inOut" });
-      gsap.to(".chip-float.c2", { y: -8, duration: 3.2, yoyo: true, repeat: -1, ease: "sine.inOut" });
+      // плитки: таймер решения и «без звонков» — анимация внутри статичных блоков
+      const t = { m: 0 };
+      const minEl = document.querySelector<HTMLElement>(".t-min");
+      gsap.timeline({ repeat: -1, repeatDelay: 1.5, delay: 1.4 })
+        .fromTo(".rt-fg", { strokeDashoffset: 170 }, { strokeDashoffset: 0, duration: 2.4, ease: "power1.inOut" })
+        .fromTo(t, { m: 0 }, { m: 5, duration: 2.4, ease: "power1.inOut", onUpdate: () => { if (minEl) minEl.textContent = String(Math.round(t.m)); } }, "<")
+        .to(".tile:first-child", { boxShadow: "0 0 0 1px rgba(239,49,36,.6)", duration: 0.3, yoyo: true, repeat: 1 });
+      gsap.fromTo(".p-ring", { scale: 0.6, autoAlpha: 0.7 }, { scale: 1.9, autoAlpha: 0, duration: 2, stagger: 1, repeat: -1, ease: "power1.out" });
       gsap.to(".grid-svg .accent", { strokeDashoffset: -400, strokeDasharray: "60 340", duration: 6, repeat: -1, ease: "none" });
     }, page);
     return () => ctx.revert();
@@ -124,7 +128,8 @@ export default function Login() {
           <line className="accent" x1="600" y1="0" x2="600" y2="900" />
         </svg>
 
-        <div className="mock" aria-hidden>
+        <div className="hero-panel" aria-hidden>
+        <div className="mock">
           <div className="m-ok"><Check size={26} color="#fff" strokeWidth={3} /></div>
           <div className="m-top"><span>Заявка CR-2610-00042</span><span>Экспресс-кредит</span></div>
           <div className="m-sum">0 ₽</div>
@@ -139,8 +144,17 @@ export default function Login() {
             <div><span>Бюро кредитных историй</span><em>✓ без просрочек</em></div>
           </div>
         </div>
-        <div className="chip-float c1" style={{ right: 360, top: 250 }}><span className="c-ico"><Zap size={15} /></span>Решение за 5 минут</div>
-        <div className="chip-float c2" style={{ right: 24, top: 420 }}><span className="c-ico" style={{ background: "#0b0b0d" }}><ShieldCheck size={15} /></span>Без звонков и визитов</div>
+        <div className="tiles">
+          <div className="tile">
+            <svg className="ring-timer" viewBox="0 0 64 64"><circle cx="32" cy="32" r="27" className="rt-bg" /><circle cx="32" cy="32" r="27" className="rt-fg" /></svg>
+            <div><div className="t-big"><span className="t-min">0</span> мин</div><div className="t-sub">до автоматического решения</div></div>
+          </div>
+          <div className="tile">
+            <div className="pulse"><span className="p-ring" /><span className="p-ring r2" /><span className="p-core"><PhoneOff size={18} /></span></div>
+            <div><div className="t-big">0 звонков</div><div className="t-sub">всё внутри кабинета</div></div>
+          </div>
+        </div>
+        </div>
 
         <div className="logo" style={{ position: "relative", zIndex: 1 }}><span className="logo-mark">А</span><span>Бизнес-кредит<small style={{ color: "rgba(255,255,255,.5)" }}>прототип · Альфа Будущее</small></span></div>
         <h1>
@@ -154,7 +168,6 @@ export default function Login() {
           <div><b>6 этапов</b><span>прозрачный статус</span></div>
           <div><b>0 звонков</b><span>всё внутри продукта</span></div>
         </div>
-        <div className="marquee" aria-hidden><div className="track">{[0, 1].flatMap((k) => ["Экспресс-кредит", "Овердрафт", "Кредит на развитие", "Инвестиционный кредит", "Бизнес-карта", "Решение онлайн", "Без залога"].map((t) => <span key={k + t}>{t}</span>))}</div></div>
       </div>
 
       <div className="login-side v2">

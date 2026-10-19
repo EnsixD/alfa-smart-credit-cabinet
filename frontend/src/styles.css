@@ -446,5 +446,24 @@ svg.lucide { flex: none; }
 .marquee { position: absolute; left: 0; right: 0; bottom: 0; overflow: hidden; border-top: 1px solid rgba(255, 255, 255, .08); padding: 14px 0; z-index: 1; }
 .marquee .track { display: flex; gap: 40px; width: max-content; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: rgba(255, 255, 255, .35); }
 .marquee .track span::before { content: "●"; color: var(--red); margin-right: 40px; font-size: 8px; vertical-align: middle; }
-.login-hero { padding-bottom: 72px; }
+.login-hero { padding-bottom: 48px; }
 @media (max-width: 1200px) { .mock, .chip-float { display: none; } }
+
+/* ============ v4: статичная панель героя ============ */
+.hero-panel { position: absolute; right: 56px; top: 72px; width: 340px; z-index: 2; display: grid; gap: 12px; }
+.hero-panel .mock { position: relative; right: auto; top: auto; width: auto; }
+.mock .m-text { display: block; height: 20px; }
+.mock .m-text span { line-height: 20px; }
+.tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.tile { display: flex; flex-direction: column; gap: 10px; background: rgba(255, 255, 255, .06); border: 1px solid rgba(255, 255, 255, .12); border-radius: 18px; padding: 16px; backdrop-filter: blur(10px); }
+.t-big { font-size: 20px; font-weight: 800; letter-spacing: -.01em; }
+.t-sub { font-size: 12px; color: rgba(255, 255, 255, .5); margin-top: 2px; }
+.ring-timer { width: 44px; height: 44px; transform: rotate(-90deg); }
+.ring-timer circle { fill: none; stroke-width: 6; }
+.rt-bg { stroke: rgba(255, 255, 255, .12); }
+.rt-fg { stroke: var(--red); stroke-linecap: round; stroke-dasharray: 170; stroke-dashoffset: 170; }
+.pulse { position: relative; width: 44px; height: 44px; display: grid; place-items: center; }
+.p-ring { position: absolute; inset: 0; border-radius: 50%; border: 2px solid var(--red); }
+.p-core { position: relative; width: 44px; height: 44px; border-radius: 50%; background: var(--red); display: grid; place-items: center; color: #fff; }
+@media (max-width: 1200px) { .hero-panel { display: none; } }
+@media (max-height: 820px) { .tiles { display: none; } }
