@@ -1,0 +1,64 @@
+{
+  "771234567890": {
+    "egrul": {"name": "ИП Смирнова Анна Сергеевна", "ogrn": "321774600123456", "status": "ACTIVE", "reg_date": "2021-03-15",
+              "okved": "56.10", "okved_name": "Деятельность ресторанов и услуги по доставке продуктов питания",
+              "address": "г. Москва, ул. Покровка, д. 12", "director": "Смирнова Анна Сергеевна", "founders": [], "legal_form": "ИП"},
+    "fns": {"employees": 6, "tax_regime": "УСН «доходы минус расходы»", "tax_debt": 0, "mass_address": false,
+            "disqualified_director": false, "revenue_last_year": 13800000},
+    "bki": {"history_months": 40, "overdue_12m": 0, "current_overdue_days": 0, "max_overdue_days": 0, "active_loans": []}
+  },
+  "7701234567": {
+    "egrul": {"name": "ООО «ТоргСнаб»", "ogrn": "1197746123456", "status": "ACTIVE", "reg_date": "2019-05-20",
+              "okved": "46.90", "okved_name": "Торговля оптовая неспециализированная", "address": "г. Москва, Варшавское ш., д. 47",
+              "director": "Орлов Виктор Петрович", "founders": [{"name": "Орлов Виктор Петрович", "share": 100}], "legal_form": "ООО"},
+    "fns": {"employees": 24, "tax_regime": "ОСН", "tax_debt": 0, "mass_address": false, "disqualified_director": false,
+            "revenue_last_year": 58000000},
+    "bki": {"history_months": 62, "overdue_12m": 0, "current_overdue_days": 0, "max_overdue_days": 4,
+            "active_loans": [{"creditor": "Банк А", "type": "Кредит на пополнение оборотных средств", "balance": 4100000, "monthly_payment": 250000}]}
+  },
+  "5003123456": {
+    "egrul": {"name": "ООО «ЭкоПласт»", "ogrn": "1185003001234", "status": "ACTIVE", "reg_date": "2018-02-10",
+              "okved": "22.29", "okved_name": "Производство прочих пластмассовых изделий", "address": "Московская обл., г. Видное, Промзона, стр. 3",
+              "director": "Белова Ирина Николаевна", "founders": [{"name": "Белова Ирина Николаевна", "share": 60}, {"name": "Белов Сергей Юрьевич", "share": 40}], "legal_form": "ООО"},
+    "fns": {"employees": 41, "tax_regime": "ОСН", "tax_debt": 0, "mass_address": false, "disqualified_director": false,
+            "revenue_last_year": 79000000},
+    "bki": {"history_months": 70, "overdue_12m": 0, "current_overdue_days": 0, "max_overdue_days": 0,
+            "active_loans": [{"creditor": "Банк Б", "type": "Лизинг оборудования", "balance": 6200000, "monthly_payment": 300000}]}
+  },
+  "6658123456": {
+    "egrul": {"name": "ООО «СтройМаш»", "ogrn": "1156658012345", "status": "ACTIVE", "reg_date": "2015-09-01",
+              "okved": "28.92", "okved_name": "Производство машин и оборудования для добычи полезных ископаемых и строительства",
+              "address": "г. Екатеринбург, ул. Монтажников, д. 4", "director": "Кравцов Дмитрий Олегович",
+              "founders": [{"name": "Кравцов Дмитрий Олегович", "share": 51}, {"name": "ООО «УралИнвест»", "share": 49}], "legal_form": "ООО"},
+    "fns": {"employees": 140, "tax_regime": "ОСН", "tax_debt": 0, "mass_address": false, "disqualified_director": false,
+            "revenue_last_year": 290000000},
+    "bki": {"history_months": 110, "overdue_12m": 0, "current_overdue_days": 0, "max_overdue_days": 0,
+            "active_loans": [{"creditor": "Банк В", "type": "Инвестиционный кредит", "balance": 38000000, "monthly_payment": 1500000}]}
+  },
+  "540312345678": {
+    "egrul": {"name": "ИП Козлов Пётр Андреевич", "ogrn": "322540000098765", "status": "ACTIVE", "reg_date": "2022-06-01",
+              "okved": "45.20", "okved_name": "Техническое обслуживание и ремонт автотранспортных средств",
+              "address": "г. Новосибирск, ул. Станционная, д. 30", "director": "Козлов Пётр Андреевич", "founders": [], "legal_form": "ИП"},
+    "fns": {"employees": 4, "tax_regime": "Патент", "tax_debt": 38000, "mass_address": false, "disqualified_director": false,
+            "revenue_last_year": 9400000},
+    "bki": {"history_months": 30, "overdue_12m": 4, "current_overdue_days": 62, "max_overdue_days": 62,
+            "active_loans": [{"creditor": "МФО Г", "type": "Микрозайм", "balance": 420000, "monthly_payment": 60000}]}
+  },
+  "7812345678": {
+    "egrul": {"name": "ООО «Ромашка»", "ogrn": "1177847123456", "status": "LIQUIDATING", "reg_date": "2017-04-03",
+              "okved": "47.11", "okved_name": "Торговля розничная в неспециализированных магазинах",
+              "address": "г. Санкт-Петербург, Лиговский пр., д. 50", "director": "Лебедев Игорь Ильич",
+              "founders": [{"name": "Лебедев Игорь Ильич", "share": 100}], "legal_form": "ООО"},
+    "fns": {"employees": 2, "tax_regime": "УСН", "tax_debt": 210000, "mass_address": true, "disqualified_director": false,
+            "revenue_last_year": 4000000},
+    "bki": {"history_months": 50, "overdue_12m": 1, "current_overdue_days": 0, "max_overdue_days": 15, "active_loans": []}
+  },
+  "773412345678": {
+    "egrul": {"name": "ИП Новиков Денис Игоревич", "ogrn": "326770000054321", "status": "ACTIVE", "reg_date": "2026-08-01",
+              "okved": "62.01", "okved_name": "Разработка компьютерного программного обеспечения", "address": "г. Москва, ул. Лесная, д. 5",
+              "director": "Новиков Денис Игоревич", "founders": [], "legal_form": "ИП"},
+    "fns": {"employees": 1, "tax_regime": "НПД/УСН", "tax_debt": 0, "mass_address": false, "disqualified_director": false,
+            "revenue_last_year": 0},
+    "bki": {"history_months": 0, "overdue_12m": 0, "current_overdue_days": 0, "max_overdue_days": 0, "active_loans": []}
+  }
+}
