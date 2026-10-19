@@ -50,11 +50,10 @@ export default function Dashboard() {
 
       <section className="promo reveal">
         <div className="promo-copy">
-          <h2>Подберите кредит<br />для вашего бизнеса</h2>
+          <h2>Подберите кредит для вашего бизнеса</h2>
           <p>Рассчитайте условия и отправьте заявку онлайн</p>
           <Link to="/cabinet/new" className="btn btn-white">Рассчитать</Link>
         </div>
-        <img src="/img/arrow-red.webp" alt="" aria-hidden />
       </section>
 
       {todo.length > 0 && (

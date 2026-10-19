@@ -14,6 +14,7 @@ import BankApplication from "./pages/BankApplication";
 import BankAnalytics from "./pages/BankAnalytics";
 import "./styles.css";
 import "./theme.css";
+import "./theme2.css";
 
 type Auth = { user: User | null; login: (t: string, u: User) => void; logout: () => void };
 const AuthCtx = createContext<Auth>({ user: null, login: () => {}, logout: () => {} });

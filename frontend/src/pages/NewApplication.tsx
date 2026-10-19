@@ -1,4 +1,4 @@
-import { AlertTriangle, ArrowLeft, Check, CircleCheck, Loader, MessageSquare, Search, ShieldCheck, UploadCloud, Wallet } from "lucide-react";
+import { AlertTriangle, ArrowLeft, Check, Lock, CircleCheck, Loader, MessageSquare, Search, ShieldCheck, UploadCloud, Wallet } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { api, money, months } from "../api";
@@ -175,11 +175,12 @@ export default function NewApplication() {
             <h2>Основные данные</h2>
             <p className="sub">Укажите информацию о вашей компании и цели финансирования</p>
             <div className="form">
+              <p className="ro-note"><Lock size={13} /> Реквизиты подставлены из профиля компании — изменить их можно через поддержку</p>
               <label className="fld"><span>Юридическое название компании</span><input value={company?.name || ""} readOnly /></label>
               <label className="fld"><span>ИНН</span><input value={company?.inn || ""} readOnly /></label>
               <div className="fld-row">
-                <label className="fld"><span>Форма собственности</span><select value={company?.legal_form || ""} disabled><option>{company?.legal_form === "ИП" ? "ИП" : "ООО"}</option></select></label>
-                <label className="fld"><span>Сфера деятельности</span><select value={company?.industry || ""} disabled><option value={company?.industry}>{OKVED_SPHERES[company?.industry] || company?.okved_name}</option></select></label>
+                <label className="fld"><span>Форма собственности</span><input value={company?.legal_form === "ИП" ? "Индивидуальный предприниматель" : "Общество с ограниченной ответственностью"} readOnly /></label>
+                <label className="fld"><span>Сфера деятельности</span><input value={`${OKVED_SPHERES[company?.industry] || ""} · ОКВЭД ${company?.okved || ""}`} readOnly title={company?.okved_name} /></label>
               </div>
               <div className={"verify " + (egrul ? (egrul.loading ? "loading" : egrul.error ? "warn" : "ok") : "")}>
                 <span className="v-ico">{egrul?.loading ? <Loader size={16} className="spin-ico" /> : egrul ? (egrul.error ? <AlertTriangle size={16} /> : <ShieldCheck size={16} />) : <Search size={16} />}</span>
