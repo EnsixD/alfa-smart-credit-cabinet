@@ -1,0 +1,536 @@
+{
+ "info": {
+  "name": "Умный кредитный кабинет — API",
+  "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+ },
+ "variable": [
+  {
+   "key": "baseUrl",
+   "value": "http://localhost:8080"
+  },
+  {
+   "key": "clientToken",
+   "value": ""
+  },
+  {
+   "key": "bankToken",
+   "value": ""
+  },
+  {
+   "key": "appId",
+   "value": ""
+  },
+  {
+   "key": "bankAppId",
+   "value": ""
+  },
+  {
+   "key": "code",
+   "value": ""
+  }
+ ],
+ "item": [
+  {
+   "name": "1. Счастливый путь (client_good)",
+   "item": [
+    {
+     "name": "Вход: client_good",
+     "request": {
+      "method": "POST",
+      "header": [],
+      "url": "{{baseUrl}}/api/auth/login",
+      "body": {
+       "mode": "raw",
+       "raw": "{\n \"login\": \"client_good\",\n \"password\": \"demo123\"\n}",
+       "options": {
+        "raw": {
+         "language": "json"
+        }
+       }
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "exec": [
+         "pm.collectionVariables.set('clientToken', pm.response.json().token);",
+         "pm.test('200',()=>pm.response.to.have.status(200));"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Каталог продуктов",
+     "request": {
+      "method": "GET",
+      "header": [],
+      "url": "{{baseUrl}}/api/catalog/products"
+     }
+    },
+    {
+     "name": "Подбор продуктов + предоценка",
+     "request": {
+      "method": "POST",
+      "header": [
+       {
+        "key": "Authorization",
+        "value": "Bearer {{clientToken}}"
+       }
+      ],
+      "url": "{{baseUrl}}/api/catalog/recommend",
+      "body": {
+       "mode": "raw",
+       "raw": "{\n \"purpose\": \"purchase\",\n \"amount\": 1000000,\n \"term_months\": 12\n}",
+       "options": {
+        "raw": {
+         "language": "json"
+        }
+       }
+      }
+     }
+    },
+    {
+     "name": "Автозаполнение по ИНН (ЕГРЮЛ mock)",
+     "request": {
+      "method": "GET",
+      "header": [
+       {
+        "key": "Authorization",
+        "value": "Bearer {{clientToken}}"
+       }
+      ],
+      "url": "{{baseUrl}}/api/company/lookup/771234567890"
+     }
+    },
+    {
+     "name": "Создать черновик",
+     "request": {
+      "method": "POST",
+      "header": [
+       {
+        "key": "Authorization",
+        "value": "Bearer {{clientToken}}"
+       }
+      ],
+      "url": "{{baseUrl}}/api/applications",
+      "body": {
+       "mode": "raw",
+       "raw": "{\n \"product_code\": \"EXPRESS\",\n \"amount\": 1000000,\n \"term_months\": 12,\n \"purpose\": \"purchase\",\n \"consents\": {\n  \"pd\": true,\n  \"bki\": true\n }\n}",
+       "options": {
+        "raw": {
+         "language": "json"
+        }
+       }
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "exec": [
+         "pm.collectionVariables.set('appId', pm.response.json().id);"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Автосохранение черновика",
+     "request": {
+      "method": "PATCH",
+      "header": [
+       {
+        "key": "Authorization",
+        "value": "Bearer {{clientToken}}"
+       }
+      ],
+      "url": "{{baseUrl}}/api/applications/{{appId}}",
+      "body": {
+       "mode": "raw",
+       "raw": "{\n \"purpose_text\": \"Закупка кофе к сезону\"\n}",
+       "options": {
+        "raw": {
+         "language": "json"
+        }
+       }
+      }
+     }
+    },
+    {
+     "name": "Отправить (идемпотентно)",
+     "request": {
+      "method": "POST",
+      "header": [
+       {
+        "key": "Authorization",
+        "value": "Bearer {{clientToken}}"
+       },
+       {
+        "key": "Idempotency-Key",
+        "value": "{{$guid}}"
+       }
+      ],
+      "url": "{{baseUrl}}/api/applications/{{appId}}/submit"
+     }
+    },
+    {
+     "name": "Статус заявки (повторять, пока не APPROVED)",
+     "request": {
+      "method": "GET",
+      "header": [
+       {
+        "key": "Authorization",
+        "value": "Bearer {{clientToken}}"
+       }
+      ],
+      "url": "{{baseUrl}}/api/applications/{{appId}}"
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "exec": [
+         "const a=pm.response.json(); console.log(a.status.code); if(a.signing) pm.collectionVariables.set('code', a.signing.code);"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Принять предложение",
+     "request": {
+      "method": "POST",
+      "header": [
+       {
+        "key": "Authorization",
+        "value": "Bearer {{clientToken}}"
+       }
+      ],
+      "url": "{{baseUrl}}/api/applications/{{appId}}/accept"
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "exec": [
+         "pm.collectionVariables.set('code', pm.response.json().signing.code);"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Подписать договор",
+     "request": {
+      "method": "POST",
+      "header": [
+       {
+        "key": "Authorization",
+        "value": "Bearer {{clientToken}}"
+       }
+      ],
+      "url": "{{baseUrl}}/api/applications/{{appId}}/sign",
+      "body": {
+       "mode": "raw",
+       "raw": "{\n \"code\": \"{{code}}\"\n}",
+       "options": {
+        "raw": {
+         "language": "json"
+        }
+       }
+      }
+     }
+    },
+    {
+     "name": "Компания: баланс и кредиты",
+     "request": {
+      "method": "GET",
+      "header": [
+       {
+        "key": "Authorization",
+        "value": "Bearer {{clientToken}}"
+       }
+      ],
+      "url": "{{baseUrl}}/api/company"
+     }
+    },
+    {
+     "name": "Персональная лента",
+     "request": {
+      "method": "GET",
+      "header": [
+       {
+        "key": "Authorization",
+        "value": "Bearer {{clientToken}}"
+       }
+      ],
+      "url": "{{baseUrl}}/api/news/feed"
+     }
+    },
+    {
+     "name": "Уведомления",
+     "request": {
+      "method": "GET",
+      "header": [
+       {
+        "key": "Authorization",
+        "value": "Bearer {{clientToken}}"
+       }
+      ],
+      "url": "{{baseUrl}}/api/notifications"
+     }
+    },
+    {
+     "name": "Ассистент",
+     "request": {
+      "method": "POST",
+      "header": [
+       {
+        "key": "Authorization",
+        "value": "Bearer {{clientToken}}"
+       }
+      ],
+      "url": "{{baseUrl}}/api/assistant/ask",
+      "body": {
+       "mode": "raw",
+       "raw": "{\n \"question\": \"Что сейчас с моей заявкой?\"\n}",
+       "options": {
+        "raw": {
+         "language": "json"
+        }
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "2. Рабочее место банка",
+   "item": [
+    {
+     "name": "Вход: underwriter",
+     "request": {
+      "method": "POST",
+      "header": [],
+      "url": "{{baseUrl}}/api/auth/login",
+      "body": {
+       "mode": "raw",
+       "raw": "{\n \"login\": \"underwriter\",\n \"password\": \"demo123\"\n}",
+       "options": {
+        "raw": {
+         "language": "json"
+        }
+       }
+      }
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "exec": [
+         "pm.collectionVariables.set('bankToken', pm.response.json().token);",
+         "pm.test('200',()=>pm.response.to.have.status(200));"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Очередь: требуют решения",
+     "request": {
+      "method": "GET",
+      "header": [
+       {
+        "key": "Authorization",
+        "value": "Bearer {{bankToken}}"
+       }
+      ],
+      "url": "{{baseUrl}}/api/bank/applications?status=ACTION"
+     },
+     "event": [
+      {
+       "listen": "test",
+       "script": {
+        "exec": [
+         "const r=pm.response.json(); if(r.length) pm.collectionVariables.set('bankAppId', r[0].id);"
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "name": "Карточка заявки",
+     "request": {
+      "method": "GET",
+      "header": [
+       {
+        "key": "Authorization",
+        "value": "Bearer {{bankToken}}"
+       }
+      ],
+      "url": "{{baseUrl}}/api/bank/applications/{{bankAppId}}"
+     }
+    },
+    {
+     "name": "Запросить документ",
+     "request": {
+      "method": "POST",
+      "header": [
+       {
+        "key": "Authorization",
+        "value": "Bearer {{bankToken}}"
+       }
+      ],
+      "url": "{{baseUrl}}/api/bank/applications/{{bankAppId}}/decision",
+      "body": {
+       "mode": "raw",
+       "raw": "{\n \"action\": \"request_info\",\n \"comment\": \"Нужна выписка\",\n \"tasks\": [\n  {\n   \"kind\": \"DOCUMENT\",\n   \"doc_type\": \"BANK_STATEMENT\",\n   \"title\": \"Выписка из другого банка\"\n  }\n ]\n}",
+       "options": {
+        "raw": {
+         "language": "json"
+        }
+       }
+      }
+     }
+    },
+    {
+     "name": "Контрпредложение",
+     "request": {
+      "method": "POST",
+      "header": [
+       {
+        "key": "Authorization",
+        "value": "Bearer {{bankToken}}"
+       }
+      ],
+      "url": "{{baseUrl}}/api/bank/applications/{{bankAppId}}/decision",
+      "body": {
+       "mode": "raw",
+       "raw": "{\n \"action\": \"counter\",\n \"comment\": \"Снижаем сумму\",\n \"amount\": 8000000\n}",
+       "options": {
+        "raw": {
+         "language": "json"
+        }
+       }
+      }
+     }
+    },
+    {
+     "name": "Эскалировать",
+     "request": {
+      "method": "POST",
+      "header": [
+       {
+        "key": "Authorization",
+        "value": "Bearer {{bankToken}}"
+       }
+      ],
+      "url": "{{baseUrl}}/api/bank/applications/{{bankAppId}}/decision",
+      "body": {
+       "mode": "raw",
+       "raw": "{\n \"action\": \"escalate\",\n \"comment\": \"Сумма выше полномочий\"\n}",
+       "options": {
+        "raw": {
+         "language": "json"
+        }
+       }
+      }
+     }
+    },
+    {
+     "name": "Метрики воронки",
+     "request": {
+      "method": "GET",
+      "header": [
+       {
+        "key": "Authorization",
+        "value": "Bearer {{bankToken}}"
+       }
+      ],
+      "url": "{{baseUrl}}/api/bank/metrics"
+     }
+    },
+    {
+     "name": "Правила скоринга",
+     "request": {
+      "method": "GET",
+      "header": [
+       {
+        "key": "Authorization",
+        "value": "Bearer {{bankToken}}"
+       }
+      ],
+      "url": "{{baseUrl}}/api/bank/ruleset"
+     }
+    },
+    {
+     "name": "Сбой БКИ (симуляция)",
+     "request": {
+      "method": "POST",
+      "header": [
+       {
+        "key": "Authorization",
+        "value": "Bearer {{bankToken}}"
+       }
+      ],
+      "url": "{{baseUrl}}/api/bank/integrations",
+      "body": {
+       "mode": "raw",
+       "raw": "{\n \"service\": \"BKI\",\n \"mode\": \"down\"\n}",
+       "options": {
+        "raw": {
+         "language": "json"
+        }
+       }
+      }
+     }
+    },
+    {
+     "name": "Восстановить БКИ",
+     "request": {
+      "method": "POST",
+      "header": [
+       {
+        "key": "Authorization",
+        "value": "Bearer {{bankToken}}"
+       }
+      ],
+      "url": "{{baseUrl}}/api/bank/integrations",
+      "body": {
+       "mode": "raw",
+       "raw": "{\n \"service\": \"BKI\",\n \"mode\": \"ok\"\n}",
+       "options": {
+        "raw": {
+         "language": "json"
+        }
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "3. Служебные",
+   "item": [
+    {
+     "name": "Health",
+     "request": {
+      "method": "GET",
+      "header": [],
+      "url": "{{baseUrl}}/health"
+     }
+    },
+    {
+     "name": "Prometheus metrics",
+     "request": {
+      "method": "GET",
+      "header": [],
+      "url": "{{baseUrl}}/metrics"
+     }
+    }
+   ]
+  }
+ ]
+}
