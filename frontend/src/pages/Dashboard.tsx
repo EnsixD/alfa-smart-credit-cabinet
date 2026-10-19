@@ -1,7 +1,7 @@
 import { ArrowRight, ArrowUpRight, BadgePercent, BookOpen, Building2, CalendarClock, CreditCard, Factory, FileText, Hourglass, Landmark, Newspaper, Package, PenLine, Rocket, ShieldAlert, Sparkles, TrendingUp, Wallet, Zap } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { api, dt, money, months } from "../api";
+import { api, dt, money, months, poll } from "../api";
 import { AnimatedNumber, useReveal } from "../anim";
 import { Progress, StatusBadge } from "../components/Status";
 import { useAuth } from "../main";
@@ -77,9 +77,7 @@ export default function Dashboard() {
     api("/api/company").then(setCompany);
   };
   useEffect(() => {
-    load();
-    const t = setInterval(load, 4000);
-    return () => clearInterval(t);
+    return poll(load, 4000);
   }, []);
   useReveal(root, [apps === null, company === null, apps?.length]);
   // переход «График платежей» с экрана выдачи: раскрываем первый кредит и прокручиваем к нему

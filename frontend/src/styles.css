@@ -845,3 +845,17 @@ main.container:has(.done-page) { padding-bottom: 24px; }
 .payout-ghost:hover { background: rgba(255, 255, 255, .26); box-shadow: none; }
 @media (max-width: 700px) { .payout-facts { grid-template-columns: 1fr 1fr; } }
 .done-page { grid-template-rows: minmax(0, 1fr); } .done-page > * { min-height: 0; } .done-steps { padding: 22px 24px; } .done-steps ol { margin-top: 8px; } .ds-foot { margin-top: 10px; padding-top: 10px; }
+
+/* ============ v13: заметный анимированный фон ============ */
+.bg-anim i { filter: blur(70px); opacity: 1; }
+.bg-anim i:nth-child(1) { width: 52vw; height: 52vw; left: -14vw; top: -22vw; background: radial-gradient(circle, rgba(239, 49, 36, .42), rgba(239, 49, 36, 0) 65%); animation: drift1 18s ease-in-out infinite alternate; }
+.bg-anim i:nth-child(2) { width: 44vw; height: 44vw; right: -12vw; top: 14vh; background: radial-gradient(circle, rgba(255, 90, 77, .34), rgba(255, 90, 77, 0) 65%); animation: drift2 22s ease-in-out infinite alternate; }
+.bg-anim i:nth-child(3) { width: 40vw; height: 40vw; left: 28vw; bottom: -24vw; background: radial-gradient(circle, rgba(239, 49, 36, .26), rgba(239, 49, 36, 0) 65%); animation: drift3 26s ease-in-out infinite alternate; }
+.bg-anim::after { content: ""; position: absolute; inset: -50%; background: conic-gradient(from 0deg at 50% 50%, transparent 0 70%, rgba(239, 49, 36, .06) 80%, transparent 90%); animation: sweep 30s linear infinite; }
+@keyframes drift1 { to { transform: translate(22vw, 18vh) scale(1.15); } }
+@keyframes drift2 { to { transform: translate(-20vw, 26vh) scale(.85); } }
+@keyframes drift3 { to { transform: translate(-18vw, -22vh) scale(1.12); } }
+@keyframes sweep { to { transform: rotate(360deg); } }
+/* карточки чуть прозрачнее, чтобы фон был виден между ними */
+.card, .feed, .done-steps { background: rgba(255, 255, 255, .86); backdrop-filter: blur(14px); }
+@media (prefers-reduced-motion: reduce) { .bg-anim i, .bg-anim::after { animation: none; } }

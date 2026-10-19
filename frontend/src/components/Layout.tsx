@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { X } from "lucide-react";
-import { api, dt } from "../api";
+import { api, dt, poll } from "../api";
 import { replay } from "../anim";
 import { useAuth } from "../main";
 import Assistant from "./Assistant";
@@ -23,9 +23,7 @@ function Notifications() {
   const nav = useNavigate();
   const load = () => api("/api/notifications").then(setItems).catch(() => {});
   useEffect(() => {
-    load();
-    const t = setInterval(load, 5000);
-    return () => clearInterval(t);
+    return poll(load, 5000);
   }, []);
   useLayoutEffect(() => {
     if (open) replay(box.current, "pop-in");

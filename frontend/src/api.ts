@@ -75,13 +75,34 @@ export async function api<T = any>(path: string, opts: { method?: string; body?:
   return (ct.includes("application/json") ? res.json() : res.text()) as Promise<T>;
 }
 
-/** Подписка на события заявки через SSE: статус меняется в интерфейсе без перезагрузки. */
+/**
+ * Подписка на события заявки через SSE: статус меняется в интерфейсе без перезагрузки.
+ * Соединение закрывается, когда вкладка скрыта: браузер даёт на один адрес всего ~6 соединений,
+ * и висящие потоки из фоновых вкладок тормозили бы остальные запросы.
+ */
 export function subscribe(appId: number, onEvent: (e: any) => void): () => void {
   const token = getToken();
   if (!token) return () => {};
-  const es = new EventSource(`/api/applications/${appId}/stream?token=${encodeURIComponent(token)}`);
-  es.addEventListener("update", (ev) => onEvent(JSON.parse((ev as MessageEvent).data)));
-  return () => es.close();
+  let es: EventSource | null = null;
+  const open = () => {
+    if (es) return;
+    es = new EventSource(`/api/applications/${appId}/stream?token=${encodeURIComponent(token)}`);
+    es.addEventListener("update", (ev) => onEvent(JSON.parse((ev as MessageEvent).data)));
+  };
+  const close = () => { es?.close(); es = null; };
+  const onVis = () => { if (document.hidden) close(); else { open(); onEvent({ type: "RESYNC" }); } };
+  if (!document.hidden) open();
+  document.addEventListener("visibilitychange", onVis);
+  return () => { document.removeEventListener("visibilitychange", onVis); close(); };
+}
+
+/** Периодический опрос, который не работает в фоновых вкладках и сразу обновляет данные при возврате. */
+export function poll(fn: () => void, ms: number): () => void {
+  fn();
+  const t = setInterval(() => { if (!document.hidden) fn(); }, ms);
+  const onVis = () => { if (!document.hidden) fn(); };
+  document.addEventListener("visibilitychange", onVis);
+  return () => { clearInterval(t); document.removeEventListener("visibilitychange", onVis); };
 }
 
 export const money = (v: number | null | undefined) =>

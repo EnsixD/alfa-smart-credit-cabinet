@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { api, money } from "../api";
+import { api, money, poll } from "../api";
 import { AnimatedNumber, replay, useReveal } from "../anim";
 
 const SERVICES: Record<string, string> = { EGRUL: "ЕГРЮЛ / ЕГРИП", FNS: "ФНС «Прозрачный бизнес»", BKI: "Бюро кредитных историй", PAYMENTS: "Платёжный шлюз" };
@@ -15,7 +15,7 @@ export default function BankAnalytics() {
     api("/api/bank/metrics").then(setM);
     api("/api/bank/integrations").then(setFaults).catch(() => setFaults({ error: true }));
   };
-  useEffect(() => { load(); api("/api/bank/ruleset").then(setRules); const t = setInterval(load, 5000); return () => clearInterval(t); }, []);
+  useEffect(() => { api("/api/bank/ruleset").then(setRules); return poll(load, 5000); }, []);
   useReveal(root, [m === null, rules === null]);
   const funnelKey = m?.funnel.map((f: any) => f.count).join(",");
   useLayoutEffect(() => {

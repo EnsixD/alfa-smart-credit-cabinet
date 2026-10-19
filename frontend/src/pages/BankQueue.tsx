@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { api, dt, money } from "../api";
+import { api, dt, money, poll } from "../api";
 import { useReveal } from "../anim";
 import { StatusBadge } from "../components/Status";
 
@@ -22,10 +22,10 @@ export default function BankQueue() {
   const nav = useNavigate();
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    const load = () => api(`/api/bank/applications?status=${encodeURIComponent(filter)}&q=${encodeURIComponent(q)}`).then(setRows);
-    load();
-    const t = setInterval(load, 4000);
-    return () => clearInterval(t);
+    let alive = true; // ответ от прошлой вкладки не должен перезаписать текущую
+    const load = () => api(`/api/bank/applications?status=${encodeURIComponent(filter)}&q=${encodeURIComponent(q)}`).then((r) => { if (alive) setRows(r); });
+    const stop = poll(load, 4000);
+    return () => { alive = false; stop(); };
   }, [filter, q]);
   useReveal(ref, [rows]);
 
