@@ -4,6 +4,7 @@ import { Link, useParams } from "react-router-dom";
 import { api, dt, money, months, statusTone, subscribe } from "../api";
 import { AnimatedNumber, celebrate, usePop } from "../anim";
 import { CheckRow, Progress, StatusBadge, Timeline } from "../components/Status";
+import { DisburseOverlay, DisbursedView } from "../components/Disbursed";
 import { useAuth } from "../main";
 
 const rub = (v: number) => Math.round(v).toLocaleString("ru-RU") + " ₽";
@@ -201,7 +202,17 @@ function Details({ app, reload }: { app: any; reload: () => void }) {
 export default function ApplicationPage() {
   const { id } = useParams();
   const [app, setApp] = useState<any>(null);
+  const [overlay, setOverlay] = useState(false);
+  const [details, setDetails] = useState(false);
   const reload = () => api(`/api/applications/${id}`).then(setApp);
+  // полноэкранная анимация зачисления: показываем один раз, когда заявка впервые видна выданной
+  useEffect(() => {
+    if (app?.status.code !== "DISBURSED") return;
+    const key = `payout-seen-${app.id}`;
+    let seen = false;
+    try { seen = !!localStorage.getItem(key); localStorage.setItem(key, "1"); } catch { /* без хранилища просто покажем */ }
+    if (!seen) setOverlay(true);
+  }, [app?.status.code, app?.id]);
   useEffect(() => {
     reload();
     // события конвейера приходят по SSE — карточка обновляется без перезагрузки
@@ -211,6 +222,15 @@ export default function ApplicationPage() {
   const s = app.status.code;
   const live = IN_PROGRESS.includes(s);
   const tone = statusTone(s);
+
+  if (s === "DISBURSED" && !details) {
+    return (
+      <>
+        <DisbursedView app={app} onReplay={() => setOverlay(true)} onDetails={() => setDetails(true)} />
+        {overlay && <DisburseOverlay app={app} onClose={() => setOverlay(false)} />}
+      </>
+    );
+  }
 
   return (
     <div className="grid grid-2">
@@ -231,11 +251,7 @@ export default function ApplicationPage() {
         {s === "NEEDS_INFO" && <Tasks app={app} reload={reload} />}
         {(s === "APPROVED" || s === "COUNTER_OFFER") && app.offer && <OfferCard app={app} reload={reload} />}
         {s === "SIGNING" && <SigningCard app={app} reload={reload} />}
-        {s === "DISBURSED" && (
-          <SuccessHero app={app} title={`${money(app.offer.amount)} на счёте`} sub={`Деньги зачислены. Платёж ${money(app.offer.monthly_payment)} в месяц · ${app.offer.rate}%`}>
-            <div className="sx-actions sx-item"><Link to="/" className="btn sx-primary">График платежей <ArrowRight size={16} /></Link></div>
-          </SuccessHero>
-        )}
+        {s === "DISBURSED" && <button className="btn secondary" style={{ alignSelf: "flex-start" }} onClick={() => setDetails(false)}>← К итогам выдачи</button>}
         {s === "REJECTED" && app.decision && (
           <div className="card action-card">
             <div className="ac-head"><div className="ac-ico bad"><X size={20} /></div><div><h2>Сейчас не можем выдать кредит</h2><p className="muted small">Это не окончательно — вот что поможет</p></div></div>

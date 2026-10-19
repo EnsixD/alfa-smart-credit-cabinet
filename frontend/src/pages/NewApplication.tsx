@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { api, DOC_TYPES, money, months } from "../api";
-import { useStepTransition } from "../anim";
-import { AlertTriangle, ArrowLeft, ArrowRight, Search, Truck, UploadCloud, CircleCheck, ShieldCheck, Banknote, Building2, Check, Clock, CreditCard, Factory, FileText, Hourglass, Landmark, Package, Percent, RefreshCw, Rocket, Send, Sparkles, Star, Target, TrendingUp, Wallet, Zap } from "lucide-react";
+import { AnimatedNumber, useStepTransition } from "../anim";
+import { AlertTriangle, ArrowLeft, Loader, ArrowRight, Search, Truck, UploadCloud, CircleCheck, ShieldCheck, Banknote, Building2, Check, Clock, CreditCard, Factory, FileText, Hourglass, Landmark, Package, Percent, RefreshCw, Rocket, Send, Sparkles, Star, Target, TrendingUp, Wallet, Zap } from "lucide-react";
 
 const PURPOSES: Record<string, { icon: any; hint: string }> = {
   cash_gap: { icon: Hourglass, hint: "Покупатель платит позже, а платить нужно сейчас" },
@@ -76,6 +76,20 @@ export default function NewApplication() {
       return next;
     });
   };
+  // плавный «перерасчёт» суммы при выборе пресета
+  const raf = useRef<number>();
+  const animateAmount = (to: number) => {
+    cancelAnimationFrame(raf.current!);
+    const from = Number(form.amount) || 0;
+    const start = performance.now();
+    const tick = (now: number) => {
+      const p = Math.min(1, (now - start) / 550);
+      const e = 1 - Math.pow(1 - p, 3);
+      if (p < 1) { setForm((f: any) => ({ ...f, amount: Math.round(from + (to - from) * e) })); raf.current = requestAnimationFrame(tick); }
+      else set({ amount: to });
+    };
+    raf.current = requestAnimationFrame(tick);
+  };
   const setFin = (k: string, v: any) => set({ financials: { ...form.financials, [k]: v } });
 
   const findProducts = async () => {
@@ -98,7 +112,10 @@ export default function NewApplication() {
   };
 
   const checkInn = async () => {
-    try { setEgrul(await api(`/api/company/lookup/${company.inn}`)); } catch (e: any) { setEgrul({ error: e.message }); }
+    setEgrul({ loading: true });
+    const pause = new Promise((r) => setTimeout(r, 900)); // даём увидеть, что идёт сверка
+    try { const [res] = await Promise.all([api(`/api/company/lookup/${company.inn}`), pause]); setEgrul(res); }
+    catch (e: any) { await pause; setEgrul({ error: e.message }); }
   };
 
   const upload = async (docType: string, file: File) => {
@@ -174,7 +191,7 @@ export default function NewApplication() {
                 <input inputMode="numeric" value={form.amount ? new Intl.NumberFormat("ru-RU").format(form.amount) : ""} onChange={(e) => { const d = e.target.value.replace(/\D/g, ""); set({ amount: d ? Number(d) : null }); }} />
                 <span style={{ fontSize: 28, fontWeight: 800 }}>₽</span>
               </div>
-              <div className="presets">{[500_000, 1_000_000, 3_000_000, 10_000_000].map((v) => <button key={v} className={form.amount === v ? "on" : ""} onClick={() => set({ amount: v })}>{v >= 1e6 ? `${v / 1e6} млн` : `${v / 1e3} тыс`}</button>)}</div>
+              <div className="presets">{[500_000, 1_000_000, 3_000_000, 10_000_000].map((v) => <button key={v} className={form.amount === v ? "on" : ""} onClick={() => animateAmount(v)}>{v >= 1e6 ? `${v / 1e6} млн` : `${v / 1e3} тыс`}</button>)}</div>
             </div>
             <div className="card flat">
               <div className="faint small">На какой срок</div>
@@ -203,7 +220,7 @@ export default function NewApplication() {
                     {r.recommended && <span className="badge red plain"><Star size={12} /> Лучший выбор</span>}
                   </div>
                   <div><h3 style={{ margin: 0, fontSize: 18 }}>{r.product.name}</h3><div className="small muted" style={{ marginTop: 4 }}>{r.product.short}</div></div>
-                  <div><span className="rate">{money(r.monthly_payment)}</span><span className="faint small"> в месяц</span></div>
+                  <div><span className="rate"><AnimatedNumber value={r.monthly_payment} format={(v) => Math.round(v).toLocaleString("ru-RU") + " ₽"} /></span><span className="faint small"> в месяц</span></div>
                   <div className="feat"><Banknote size={16} />{money(r.amount)} на {months(r.term_months)}</div>
                   <div className="feat"><Percent size={16} />ставка от {r.rate_from}% годовых</div>
                   <div className="feat"><Clock size={16} />решение {r.product.decision_time}</div>
@@ -236,13 +253,13 @@ export default function NewApplication() {
                       <div className="info"><span>Дата регистрации</span><b>{new Date(company.reg_date).toLocaleDateString("ru-RU")}</b></div>
                       <div className="info"><span>Руководитель</span><b>{company.director}</b></div>
                     </div>
-                    <div className={"verify " + (egrul ? (egrul.error ? "warn" : "ok") : "")}>
-                      <div className="v-ico">{egrul ? (egrul.error ? <AlertTriangle size={18} /> : <ShieldCheck size={18} />) : <Search size={18} />}</div>
+                    <div className={"verify " + (egrul ? (egrul.loading ? "loading" : egrul.error ? "warn" : "ok") : "")}>
+                      <div className="v-ico">{egrul?.loading ? <Loader size={18} className="spin-ico" /> : egrul ? (egrul.error ? <AlertTriangle size={18} /> : <ShieldCheck size={18} />) : <Search size={18} />}</div>
                       <div style={{ flex: 1 }}>
-                        <b>{egrul ? (egrul.error ? "Реестр недоступен" : `Найдено в реестре · ${egrul.status_text}`) : "Сверка с ЕГРЮЛ / ЕГРИП"}</b>
-                        <div className="small muted">{egrul ? (egrul.error || egrul.source) : "Проверим, что данные совпадают с госреестром"}</div>
+                        <b>{egrul?.loading ? "Идёт сверка с ЕГРЮЛ / ЕГРИП…" : egrul ? (egrul.error ? "Реестр недоступен" : `Найдено в реестре · ${egrul.status_text}`) : "Сверка с ЕГРЮЛ / ЕГРИП"}</b>
+                        <div className="small muted">{egrul?.loading ? "Запрашиваем данные о компании в госреестре" : egrul ? (egrul.error || "Реквизиты совпадают с данными реестра") : "Проверим, что данные совпадают с госреестром"}</div>
                       </div>
-                      {!egrul && <button className="btn secondary small" onClick={checkInn}>Сверить</button>}
+                      {(!egrul || egrul.error) && <button className="btn secondary small" onClick={checkInn}>{egrul?.error ? "Повторить" : "Сверить"}</button>}
                     </div>
                     <h3 style={{ marginTop: 8 }}>Контактное лицо</h3>
                     <div className="grid grid-2e" style={{ gap: 12 }}>

@@ -62,6 +62,7 @@ export default function Layout() {
   }, [loc.pathname]);
   return (
     <>
+      <div className="bg-anim" aria-hidden><i /><i /><i /></div>
       <header className="topbar">
         <div className="topbar-inner">
           <Link to="/" className="logo">

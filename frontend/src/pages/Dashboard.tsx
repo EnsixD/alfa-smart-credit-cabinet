@@ -82,6 +82,14 @@ export default function Dashboard() {
     return () => clearInterval(t);
   }, []);
   useReveal(root, [apps === null, company === null, apps?.length]);
+  // переход «График платежей» с экрана выдачи: раскрываем первый кредит и прокручиваем к нему
+  const scheduleOpened = useRef(false);
+  useEffect(() => {
+    if (scheduleOpened.current || !company?.loans?.length || !window.location.search.includes("schedule")) return;
+    scheduleOpened.current = true;
+    const el = document.querySelector<HTMLDetailsElement>(".loan");
+    if (el) { el.open = true; el.scrollIntoView({ behavior: "smooth", block: "center" }); }
+  }, [company]);
   const list = apps || [];
   const todo = list.filter((a) => a.open_tasks > 0 || ["APPROVED", "COUNTER_OFFER", "SIGNING"].includes(a.status.code));
   const active = list.filter((a) => !a.status.final && a.status.code !== "DRAFT").length;
