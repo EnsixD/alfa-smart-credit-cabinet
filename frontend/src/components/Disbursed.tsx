@@ -59,7 +59,7 @@ export function DisbursedView({ app, onReplay, onDetails }: { app: any; onReplay
   const o = app.offer;
   const at = (codes: string[]) => [...app.timeline].reverse().find((t: any) => codes.includes(t.to_status))?.created_at;
   return (
-    <div className="done">
+    <div className="done-page">
       <section className="done-hero">
         <div className="done-glow" />
         <div className="done-top">

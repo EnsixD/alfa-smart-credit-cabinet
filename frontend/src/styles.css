@@ -785,8 +785,8 @@ body {
 .verify.loading .v-ico { background: var(--info); color: #fff; }
 
 /* ============ v12: итоговый экран выдачи (без прокрутки) ============ */
-main.container:has(.done) { padding-bottom: 24px; }
-.done { display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, 380px); gap: 20px; height: calc(100vh - 64px - 56px); min-height: 500px; }
+main.container:has(.done-page) { padding-bottom: 24px; }
+.done-page { display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, 380px); gap: 20px; height: calc(100vh - 64px - 56px); min-height: 500px; }
 .done-hero { position: relative; overflow: hidden; border-radius: 30px; padding: clamp(24px, 3.5vw, 44px); color: #fff; display: flex; flex-direction: column; justify-content: space-between; gap: 16px;
   background: radial-gradient(700px 400px at 85% 10%, rgba(255, 255, 255, .18), transparent 60%), linear-gradient(135deg, #ff4a3d 0%, #ef3124 40%, #b5150c 100%);
   box-shadow: 0 30px 70px rgba(239, 49, 36, .3); animation: popIn .5s var(--ease) both; }
@@ -814,7 +814,7 @@ main.container:has(.done) { padding-bottom: 24px; }
 .done-steps li b { display: block; font-size: 14px; }
 .done-steps li small { color: var(--text-3); font-size: 12px; }
 .ds-foot { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 13px; color: var(--text-2); }
-@media (max-width: 960px) { .done { grid-template-columns: 1fr; height: auto; } .done-facts { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 960px) { .done-page { grid-template-columns: 1fr; height: auto; } .done-facts { grid-template-columns: 1fr 1fr; } }
 
 /* ============ полноэкранная анимация зачисления ============ */
 @keyframes burst { from { clip-path: circle(0% at 50% 50%); } to { clip-path: circle(150% at 50% 50%); } }
@@ -844,3 +844,4 @@ main.container:has(.done) { padding-bottom: 24px; }
 .payout-ghost { background: rgba(255, 255, 255, .16); color: #fff; height: 52px; padding: 0 20px; }
 .payout-ghost:hover { background: rgba(255, 255, 255, .26); box-shadow: none; }
 @media (max-width: 700px) { .payout-facts { grid-template-columns: 1fr 1fr; } }
+.done-page { grid-template-rows: minmax(0, 1fr); } .done-page > * { min-height: 0; } .done-steps { padding: 22px 24px; } .done-steps ol { margin-top: 8px; } .ds-foot { margin-top: 10px; padding-top: 10px; }
