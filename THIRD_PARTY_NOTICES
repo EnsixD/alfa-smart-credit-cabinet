@@ -72,25 +72,13 @@ License: MIT + Commons Clause License Condition v1.0.
 Full license is included at frontend/src/components/reactbits/LICENSE.md.
 Used as part of the Vektor application, not redistributed as a component library.
 
-Additional React Bits registry components (same upstream and license above):
+Additional React Bits components (same upstream and license above):
 SplitText: https://reactbits.dev/r/SplitText-TS-CSS.json
-PixelTransition: https://reactbits.dev/r/PixelTransition-TS-CSS.json
-Magnet: https://reactbits.dev/r/Magnet-TS-CSS.json
 SpotlightCard: https://reactbits.dev/r/SpotlightCard-TS-CSS.json
-React Bits additional components:
-Waves: https://reactbits.dev/r/Waves-TS-CSS.json
-PillNav: https://reactbits.dev/r/PillNav-TS-CSS.json
-Same upstream license included in frontend/src/components/reactbits/LICENSE.md.
-Waves cleanup adapted for React StrictMode; original resources are released without forcing context loss.
-Motion for React: https://github.com/motiondivision/motion (MIT).
-React Bits current background and navigation:
-GradientASCII: https://reactbits.dev/r/GradientASCII-TS-CSS.json
 GooeyNav: https://reactbits.dev/r/GooeyNav-TS-CSS.json
-Same upstream license included at frontend/src/components/reactbits/LICENSE.md.
-GradientASCII cleanup adapted for StrictMode; GooeyNav corners and text clipping adapted to 7px, and navigation has an accessible label.
+GooeyNav corners and text clipping adapted to 7px; navigation has an accessible label.
+Motion for React: https://github.com/motiondivision/motion (MIT).
 
-Current visual implementation:
 PortfolioGrid adapts the travelling square-wave algorithm from the project owner's
 Ensi - Portfolio v2/src/Background.tsx, with a red palette and container-aware canvas.
-It replaces GradientASCII and Waves in active screen backgrounds.
 The original Vektor monogram and README banner are project-specific generated artwork.
