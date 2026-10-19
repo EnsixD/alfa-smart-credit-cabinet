@@ -20,7 +20,7 @@ def _free_port() -> int:
 
 PORT = _free_port()
 os.environ.update({
-    "DATABASE_URL": f"sqlite:///{_db.as_posix()}",
+    "DATABASE_URL": os.environ.get("TEST_DATABASE_URL", f"sqlite:///{_db.as_posix()}"),
     "MOCK_GATEWAY_URL": f"http://127.0.0.1:{PORT}",
     "PIPELINE_STEP_DELAY_S": "0",
     "INLINE_PIPELINE": "true",

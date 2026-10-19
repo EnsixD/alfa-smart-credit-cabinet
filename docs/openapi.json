@@ -242,6 +242,28 @@
       "HTTPBearer": []
      }
     ]
+   },
+   "delete": {
+    "tags": [
+     "notifications"
+    ],
+    "summary": "Очистить все уведомления",
+    "operationId": "clear_notifications_api_notifications_delete",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
    }
   },
   "/api/notifications/read": {
@@ -266,6 +288,51 @@
       "HTTPBearer": []
      }
     ]
+   }
+  },
+  "/api/notifications/{notification_id}": {
+   "delete": {
+    "tags": [
+     "notifications"
+    ],
+    "summary": "Удалить уведомление",
+    "operationId": "delete_notification_api_notifications__notification_id__delete",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "notification_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Notification Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
    }
   },
   "/api/news/feed": {

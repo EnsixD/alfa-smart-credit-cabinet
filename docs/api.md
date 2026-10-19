@@ -35,7 +35,9 @@
 | Метод | Путь | Назначение |
 |---|---|---|
 | `GET` | `/api/notifications` | Notifications |
-| `POST` | `/api/notifications/read` | Read All |
+| `POST` | `/api/notifications/read` | Отметить все прочитанными |
+| `DELETE` | `/api/notifications/{notification_id}` | Удалить уведомление |
+| `DELETE` | `/api/notifications` | Очистить все уведомления |
 
 ## Персональная лента
 

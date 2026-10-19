@@ -167,3 +167,15 @@ def test_assistant_rules_mode(client):
     h = login(client, "client_good")
     r = client.post("/api/assistant/ask", json={"question": "Что такое овердрафт?"}, headers=h).json()
     assert "Овердрафт" in r["answer"] and r["mode"] == "rules"
+
+
+def test_notifications_can_be_deleted(client):
+    h = login(client, "client_good")
+    items = client.get("/api/notifications", headers=h).json()
+    assert items, "после сценариев выше у клиента есть уведомления"
+    assert client.delete(f"/api/notifications/{items[0]['id']}", headers=h).status_code == 200
+    assert len(client.get("/api/notifications", headers=h).json()) == len(items) - 1
+    other = login(client, "client_reject")
+    assert client.delete(f"/api/notifications/{items[1]['id']}", headers=other).status_code == 404
+    client.delete("/api/notifications", headers=h)
+    assert client.get("/api/notifications", headers=h).json() == []

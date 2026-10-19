@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { api, money } from "../api";
-import { AnimatedNumber, gsap, useReveal } from "../anim";
+import { AnimatedNumber, replay, useReveal } from "../anim";
 
 const SERVICES: Record<string, string> = { EGRUL: "ЕГРЮЛ / ЕГРИП", FNS: "ФНС «Прозрачный бизнес»", BKI: "Бюро кредитных историй", PAYMENTS: "Платёжный шлюз" };
 const MODES = [["ok", "Работает"], ["slow", "Медленно"], ["down", "Недоступен"]];
@@ -20,7 +20,7 @@ export default function BankAnalytics() {
   const funnelKey = m?.funnel.map((f: any) => f.count).join(",");
   useLayoutEffect(() => {
     const bars = funnel.current?.querySelectorAll(".funnel-bar");
-    if (bars?.length) gsap.fromTo(bars, { scaleX: 0 }, { scaleX: 1, duration: 0.8, stagger: 0.08, ease: "power3.out" });
+    bars?.forEach((b, i) => replay(b as HTMLElement, "grow-x", i * 0.08));
   }, [funnelKey]);
   const setFault = (service: string, mode: string) => api("/api/bank/integrations", { body: { service, mode } }).then(setFaults);
   const max = Math.max(1, ...(m?.funnel || []).map((f: any) => f.count));

@@ -125,6 +125,23 @@ def read_all(user: User = Depends(require_client), db: Session = Depends(get_db)
     return {"ok": True}
 
 
+@router.delete("/notifications/{notification_id}", tags=["notifications"], summary="Удалить уведомление")
+def delete_notification(notification_id: int, user: User = Depends(require_client), db: Session = Depends(get_db)):
+    n = db.get(Notification, notification_id)
+    if not n or n.company_id != user.company_id:
+        raise HTTPException(404, "Уведомление не найдено")
+    db.delete(n)
+    db.commit()
+    return {"ok": True}
+
+
+@router.delete("/notifications", tags=["notifications"], summary="Очистить все уведомления")
+def clear_notifications(user: User = Depends(require_client), db: Session = Depends(get_db)):
+    db.query(Notification).filter(Notification.company_id == user.company_id).delete()
+    db.commit()
+    return {"ok": True}
+
+
 @router.get("/news/feed", tags=["news"], summary="Персональная лента: зависит от отрасли, размера бизнеса и стадии заявки")
 def feed(user: User = Depends(require_client), db: Session = Depends(get_db)):
     return personalized_feed(db, user.company)

@@ -34,16 +34,8 @@ export default function Login() {
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
-      // 1. Вступление: сетка прорисовывается, слова заголовка выезжают из маски
-      const intro = gsap.timeline({ defaults: { ease: "power4.out" } });
-      intro.from(".grid-svg line", { strokeDasharray: 1600, strokeDashoffset: 1600, duration: 1.4, stagger: 0.03, ease: "power2.inOut" })
-        .from(".mask > span", { yPercent: 110, duration: 0.9, stagger: 0.08 }, 0.2)
-        .from(".hero-line", { y: 20, autoAlpha: 0, duration: 0.7 }, "-=0.5")
-        .from(".hero-stats > div", { y: 20, autoAlpha: 0, stagger: 0.08, duration: 0.5 }, "-=0.4")
-        .fromTo(".mock", { clipPath: "inset(0% 0% 100% 0% round 22px)", y: 16 }, { clipPath: "inset(0% 0% 0% 0% round 22px)", y: 0, duration: 1.1, ease: "power3.inOut" }, 0.3)
-        .fromTo(".mock > *", { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, stagger: 0.06, duration: 0.5, ease: "power2.out" }, 0.8)
-        .fromTo(".tile", { clipPath: "inset(0% 0% 100% 0% round 18px)" }, { clipPath: "inset(0% 0% 0% 0% round 18px)", stagger: 0.15, duration: 0.9, ease: "power3.inOut" }, 0.7)
-        .from(".login-card > *", { y: 18, autoAlpha: 0, stagger: 0.07, duration: 0.5 }, 0.25);
+      // 1. Вступление: контент проявляется CSS-анимацией (styles.css), здесь — только декоративная прорисовка сетки
+      gsap.from(".grid-svg line:not(.accent)", { strokeDasharray: 1600, strokeDashoffset: 1600, duration: 1.4, stagger: 0.03, ease: "power2.inOut" });
 
       // 2. Цикл: заявка проходит конвейер внутри карточки (только прозрачность — текст не сдвигается)
       const STEPS = ["Проверяем полноту данных", "Сверяем с ЕГРЮЛ и ФНС", "Запрашиваем бюро историй", "Скоринг: рейтинг A", "Формируем решение", "Одобрено за 47 секунд"];
@@ -70,22 +62,15 @@ export default function Login() {
         .fromTo(".rt-fg", { strokeDashoffset: 170 }, { strokeDashoffset: 0, duration: 2.4, ease: "power1.inOut" })
         .fromTo(t, { m: 0 }, { m: 5, duration: 2.4, ease: "power1.inOut", onUpdate: () => { if (minEl) minEl.textContent = String(Math.round(t.m)); } }, "<");
       gsap.fromTo(".p-ring", { scale: 1, autoAlpha: 0.5 }, { scale: 1.6, autoAlpha: 0, duration: 2, stagger: 1, repeat: -1, ease: "power1.out" });
-      gsap.to(".grid-svg .accent", { strokeDashoffset: -400, strokeDasharray: "60 340", duration: 6, repeat: -1, ease: "none" });
+      // акцентные линии: период штриха 400 = сдвиг за цикл, поэтому повтор бесшовный (без «телепортации»)
+      gsap.set(".grid-svg .accent", { strokeDasharray: "80 320", strokeDashoffset: 0 });
+      gsap.to(".grid-svg .accent", { strokeDashoffset: -400, duration: 5, repeat: -1, ease: "none" });
     }, page);
     return () => ctx.revert();
   }, []);
 
-  useLayoutEffect(() => {
-    if (!demo || !modal.current) return;
-    const tl = gsap.timeline();
-    tl.fromTo(".modal-back", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.25 })
-      .fromTo(modal.current, { y: 40, scale: 0.96, autoAlpha: 0 }, { y: 0, scale: 1, autoAlpha: 1, duration: 0.45, ease: "back.out(1.5)" }, "<")
-      .fromTo(modal.current.querySelectorAll(".acc"), { y: 14, autoAlpha: 0 }, { y: 0, autoAlpha: 1, stagger: 0.03, duration: 0.35, ease: "power2.out" }, "-=0.2");
-  }, [demo]);
-
   const closeDemo = () => {
-    if (!modal.current) return setDemo(false);
-    gsap.to(".modal-back", { autoAlpha: 0, duration: 0.2, onComplete: () => setDemo(false) });
+    setDemo(false);
   };
 
   const doLogin = async (l: string, p: string) => {
@@ -101,10 +86,10 @@ export default function Login() {
     }
   };
 
-  const Acc = ({ a, bank }: { a: any; bank?: boolean }) => {
+  const Acc = ({ a, bank, i = 0 }: { a: any; bank?: boolean; i?: number }) => {
     const Icon = a.icon;
     return (
-      <button className={"choice acc" + (bank ? " bank" : "")} onClick={() => doLogin(a.login, "demo123")} disabled={!!busy}>
+      <button className={"choice acc" + (bank ? " bank" : "")} style={{ ["--d" as any]: `${0.1 + i * 0.03}s` }} onClick={() => doLogin(a.login, "demo123")} disabled={!!busy}>
         <div className="avatar">{busy === a.login ? <span className="spin" style={{ width: 16, height: 16, borderWidth: 2 }} /> : <Icon />}</div>
         <div style={{ minWidth: 0 }}>
           <div style={{ fontWeight: 700 }}>{a.who}</div>
@@ -199,9 +184,9 @@ export default function Login() {
             </div>
             <div className="modal-body">
               <h3>Предприниматели</h3>
-              <div className="acc-grid">{CLIENTS.map((a) => <Acc key={a.login} a={a} />)}</div>
+              <div className="acc-grid">{CLIENTS.map((a, i) => <Acc key={a.login} a={a} i={i} />)}</div>
               <h3 style={{ marginTop: 22 }}>Сотрудники банка</h3>
-              <div className="acc-grid">{BANK.map((a) => <Acc key={a.login} a={a} bank />)}</div>
+              <div className="acc-grid">{BANK.map((a, i) => <Acc key={a.login} a={a} bank i={i + 8} />)}</div>
             </div>
           </div>
         </div>

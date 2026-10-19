@@ -3,10 +3,21 @@ import { RefObject, useLayoutEffect, useRef } from "react";
 
 const reduced = () => typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
 
+/** Снимает inline-стили анимации: элемент гарантированно остаётся видимым, даже если анимацию прервали. */
+
+/** Перезапуск CSS-анимации: снимаем класс, форсируем reflow, ставим снова. */
+export function replay(el: HTMLElement | null, cls: string, delay = 0) {
+  if (!el) return;
+  el.classList.remove(cls);
+  void el.offsetWidth;
+  el.style.setProperty("--d", `${delay}s`);
+  el.classList.add(cls);
+}
+
 /**
- * Плавное появление элементов с классом .reveal внутри контейнера.
- * Анимируются только новые элементы, поэтому при обновлении данных (SSE, опрос)
- * уже показанное не «прыгает».
+ * Плавное появление новых элементов .reveal внутри контейнера.
+ * Анимация на CSS-keyframes: всегда доходит до конечного состояния, контент не может «застрять» прозрачным.
+ * Уже показанные элементы не анимируются повторно, поэтому обновления данных не вызывают мерцания.
  */
 export function useReveal(ref: RefObject<HTMLElement>, deps: unknown[] = []) {
   useLayoutEffect(() => {
@@ -14,11 +25,7 @@ export function useReveal(ref: RefObject<HTMLElement>, deps: unknown[] = []) {
     if (!root) return;
     const els = Array.from(root.querySelectorAll<HTMLElement>(".reveal:not([data-shown])"));
     if (root.classList.contains("reveal") && !root.dataset.shown) els.unshift(root);
-    if (!els.length) return;
-    els.forEach((e) => (e.dataset.shown = "1"));
-    if (reduced()) return;
-    const tween = gsap.fromTo(els, { y: 18, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.6, ease: "power3.out", stagger: 0.05, clearProps: "transform" });
-    return () => { tween.progress(1); };
+    els.forEach((e, i) => { e.dataset.shown = "1"; if (!reduced()) replay(e, "anim-in", Math.min(i, 10) * 0.04); });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps);
 }
@@ -34,21 +41,19 @@ export function AnimatedNumber({ value, format = (v: number) => Math.round(v).to
     const o = { v: prev.current };
     const t = gsap.to(o, { v: value, duration, ease: "power2.out", onUpdate: () => { node.textContent = format(o.v); } });
     prev.current = value;
-    return () => { t.kill(); };
+    return () => { t.kill(); node.textContent = format(value); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
   return <span ref={el}>{format(prev.current)}</span>;
 }
 
-/** Акцентное появление важного блока (решение банка, деньги зачислены). */
+/** Акцентное появление важного блока; элементы .pop-item внутри появляются следом. */
 export function usePop(ref: RefObject<HTMLElement>, key: unknown) {
   useLayoutEffect(() => {
-    if (!ref.current || reduced()) return;
-    const t = gsap.timeline();
-    t.fromTo(ref.current, { scale: 0.96, autoAlpha: 0, y: 12 }, { scale: 1, autoAlpha: 1, y: 0, duration: 0.55, ease: "back.out(1.6)" });
-    const items = ref.current.querySelectorAll(".pop-item");
-    if (items.length) t.fromTo(items, { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, stagger: 0.06, duration: 0.35, ease: "power2.out" }, "-=0.25");
-    return () => { t.progress(1); };
+    const root = ref.current;
+    if (!root || reduced()) return;
+    replay(root, "pop-in");
+    root.querySelectorAll<HTMLElement>(".pop-item").forEach((e, i) => replay(e, "anim-in", 0.15 + i * 0.05));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key]);
 }
@@ -59,22 +64,48 @@ export function useProgressFill(ref: RefObject<HTMLElement>, key: unknown) {
     const fills = ref.current?.querySelectorAll<HTMLElement>(".fill[data-on='1']");
     if (!fills?.length) return;
     if (reduced()) { gsap.set(fills, { scaleX: 1 }); return; }
-    const t = gsap.to(fills, { scaleX: 1, duration: 0.5, ease: "power2.inOut", stagger: 0.12 });
+    const t = gsap.to(fills, { scaleX: 1, duration: 0.5, ease: "power2.inOut", stagger: 0.1 });
     return () => { t.progress(1); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key]);
 }
 
-/** Переход между шагами мастера. */
+/** Переход между шагами мастера: короткий сдвиг по направлению движения. */
 export function useStepTransition(ref: RefObject<HTMLElement>, step: number) {
   const prev = useRef(step);
   useLayoutEffect(() => {
-    if (!ref.current || reduced()) return;
-    const dir = step >= prev.current ? 1 : -1;
+    const el = ref.current;
+    if (!el || reduced() || prev.current === step) return;
+    const cls = step > prev.current ? "step-in-l" : "step-in-r";
     prev.current = step;
-    const t = gsap.fromTo(ref.current, { x: 28 * dir, autoAlpha: 0 }, { x: 0, autoAlpha: 1, duration: 0.45, ease: "power3.out", clearProps: "transform" });
-    return () => { t.progress(1); };
+    el.classList.remove("step-in-l", "step-in-r");
+    replay(el, cls);
   }, [step]);
+}
+
+/** Праздничный эффект одобрения: рисуется галочка, расходятся кольца и конфетти в фирменных цветах. */
+export function celebrate(root: HTMLElement) {
+  if (reduced()) return;
+  const colors = ["#ef3124", "#ffffff", "#0b0b0d", "#ff8a80", "#0aa45a"];
+  const layer = document.createElement("div");
+  layer.className = "confetti-layer";
+  root.appendChild(layer);
+  const pieces = Array.from({ length: 46 }, (_, i) => {
+    const p = document.createElement("i");
+    p.style.background = colors[i % colors.length];
+    if (i % 3 === 0) p.style.borderRadius = "50%";
+    layer.appendChild(p);
+    return p;
+  });
+  const tl = gsap.timeline({ onComplete: () => layer.remove() });
+  setTimeout(() => layer.remove(), 3000); // страховка, если вкладка в фоне и кадры не идут
+  pieces.forEach((p) => {
+    const angle = Math.random() * Math.PI * 2;
+    const dist = 120 + Math.random() * 220;
+    tl.fromTo(p, { x: 0, y: 0, rotate: 0, scale: 0.6 + Math.random() * 0.8, autoAlpha: 1 },
+      { x: Math.cos(angle) * dist, y: Math.sin(angle) * dist * 0.7 + 140, rotate: Math.random() * 720 - 360, autoAlpha: 0, duration: 1.4 + Math.random() * 0.6, ease: "power3.out" }, 0);
+  });
+  return tl;
 }
 
 export { gsap };

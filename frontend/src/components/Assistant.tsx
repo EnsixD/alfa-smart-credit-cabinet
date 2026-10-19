@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { api } from "../api";
-import { gsap } from "../anim";
+import { replay } from "../anim";
 
 const SUGGEST = ["Что с моей заявкой?", "Какой кредит подойдёт для закупки?", "Что такое овердрафт?", "Почему предложили другие условия?"];
 
@@ -18,7 +18,7 @@ export default function Assistant() {
   const panel = useRef<HTMLDivElement>(null);
   useEffect(() => end.current?.scrollIntoView({ behavior: "smooth" }), [msgs, busy]);
   useLayoutEffect(() => {
-    if (open && panel.current) gsap.fromTo(panel.current, { scale: 0.9, autoAlpha: 0, y: 20 }, { scale: 1, autoAlpha: 1, y: 0, duration: 0.35, ease: "back.out(1.4)" });
+    if (open) replay(panel.current, "pop-in");
   }, [open]);
 
   const ask = async (text: string) => {

@@ -1,7 +1,8 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { X } from "lucide-react";
 import { api, dt } from "../api";
-import { gsap } from "../anim";
+import { replay } from "../anim";
 import { useAuth } from "../main";
 import Assistant from "./Assistant";
 
@@ -27,7 +28,7 @@ function Notifications() {
     return () => clearInterval(t);
   }, []);
   useLayoutEffect(() => {
-    if (open && box.current) gsap.fromTo(box.current, { y: -8, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.25, ease: "power2.out" });
+    if (open) replay(box.current, "pop-in");
   }, [open]);
   const unread = items.filter((n) => !n.read).length;
   return (
@@ -37,12 +38,12 @@ function Notifications() {
       </button>
       {open && (
         <div className="dropdown" ref={box}>
-          <div style={{ padding: "16px 18px 8px" }}><h3 style={{ margin: 0 }}>Уведомления</h3></div>
+          <div className="n-head"><h3 style={{ margin: 0 }}>Уведомления</h3>{items.length > 0 && <button className="n-clear" onClick={() => api("/api/notifications", { method: "DELETE" }).then(load)}>Очистить все</button>}</div>
           {items.length === 0 && <div className="n muted">Пока ничего нового</div>}
           {items.map((n) => (
             <div key={n.id} className={"n" + (n.read ? "" : " unread")} onClick={() => { setOpen(false); n.application_id && nav(`/applications/${n.application_id}`); }}>
-              <div>{n.text}</div>
-              <div className="faint small" style={{ marginTop: 4 }}>{dt(n.created_at)}</div>
+              <div className="n-body"><div>{n.text}</div><div className="faint small" style={{ marginTop: 4 }}>{dt(n.created_at)}</div></div>
+              <button className="n-del" title="Удалить" onClick={(e) => { e.stopPropagation(); setItems((xs) => xs.filter((x) => x.id !== n.id)); api(`/api/notifications/${n.id}`, { method: "DELETE" }).catch(load); }}><X size={15} /></button>
             </div>
           ))}
         </div>
@@ -57,7 +58,7 @@ export default function Layout() {
   const loc = useLocation();
   const main = useRef<HTMLElement>(null);
   useLayoutEffect(() => {
-    if (main.current) gsap.fromTo(main.current, { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: 0.4, ease: "power2.out", clearProps: "transform" });
+    replay(main.current, "anim-in");
   }, [loc.pathname]);
   return (
     <>
