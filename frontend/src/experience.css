@@ -1847,3 +1847,25 @@
   color: #fff;
 }
 .vx-hero .vf-hero-action:focus-visible { outline: 3px solid #fff; outline-offset: 5px; }
+
+/* Compact navigation: one stable surface for every state. */
+.site-header .vf-clean-nav { display:flex; align-items:center; gap:4px; padding:4px; border:1px solid #e9e9ed; border-radius:10px; background:#f6f6f8; }
+.site-header .vf-clean-nav button { position:relative; isolation:isolate; min-height:38px; padding:0 13px; border:0; border-radius:6px; background:transparent; color:#555560; font-size:14px; font-weight:600; box-shadow:none; transform:none; transition:color .25s ease,background-color .25s ease; }
+.site-header .vf-clean-nav button:hover { background:#eaeaec; color:#17171b; transform:none; }
+.site-header .vf-clean-nav button[aria-current],
+.site-header .vf-clean-nav button[aria-current]:hover { background:transparent; color:#fff; }
+.site-header .vf-clean-nav button > span:not(.vf-nav-active) { position:relative; z-index:1; }
+.site-header .vf-clean-nav .vf-nav-active { position:absolute; inset:0; z-index:0; border-radius:6px; background:#ef3124; box-shadow:0 2px 6px #df30241a; pointer-events:none; }
+.site-header .vf-clean-nav button:focus-visible { outline:2px solid #ef3124; outline-offset:4px; }
+.vx-hero { background:#f8f7f5; color:#19191d; }
+.vf-hero-parallax { position:absolute; inset:-180px 0 0; z-index:-3; pointer-events:none; }
+.vx-hero .vf-hero-field { background:#f8f7f5; z-index:auto; }
+.vx-hero-content > p { color:#5d5d68; }
+.vx-hero-content .vx-eyebrow, .vx-hero-proof { color:#64646e; }
+.vx-hero .vx-title-line { color:#19191d; }
+.vx-hero .vx-title-line.vx-red { color:#e92e22; }
+.vx-hero-caption { color:#777780; }
+.vx-hero .vx-secondary.vf-hero-action { color:#24242b; background:#ffffffd9; border-color:#cfcfd5; backdrop-filter:none; }
+.vx-hero .vx-secondary.vf-hero-action:hover { color:#d92a1e; background:#fff; border-color:#ef3124; box-shadow:0 0 20px #ef31240a; }
+.vx-hero .vf-hero-action:focus-visible { outline-color:#b9271f; }
+@media(max-width:900px) { .site-header .vf-clean-nav { display:none; } }

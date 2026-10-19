@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import GooeyNav from "./reactbits/GooeyNav";
+
 import { AnimatePresence, motion } from "motion/react";
 import { lockScroll } from "../scrollLock";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -392,6 +392,21 @@ export default function SiteHeader({
   const { user, logout } = useAuth();
   const nav = useNavigate();
   const go = useSectionNav();
+  const [activeSection, setActiveSection] = useState("business");
+  useEffect(() => {
+    if (cabinet) return;
+    const update = () => {
+      let current = "business";
+      for (const [, id] of NAV) {
+        const section = document.getElementById(id);
+        if (section && section.getBoundingClientRect().top <= window.innerHeight * .35) current = id;
+      }
+      setActiveSection(current);
+    };
+    window.addEventListener("scroll", update, { passive: true });
+    update();
+    return () => window.removeEventListener("scroll", update);
+  }, [cabinet]);
   const [search, setSearch] = useState(false);
   const [mobile, setMobile] = useState(false);
   useEffect(() => {
@@ -411,35 +426,15 @@ export default function SiteHeader({
       <div className="sh-inner">
         <Logo to="/" />
         {!cabinet && (
-          <div
-            id="site-navigation"
-            className="sh-nav vf-desktop-nav"
-            onClickCapture={(event) => {
-              const slot = (event.target as HTMLElement).closest<HTMLElement>(
-                "[data-gooey-index]",
-              );
-              if (slot) {
-                go(NAV[Number(slot.dataset.gooeyIndex)][1]);
-              }
-            }}
-          >
-            <GooeyNav
-              items={NAV.map(([label]) => ({ label }))}
-              theme="light"
-              color="#df2e22"
-              activeTextColor="#fff"
-              colors={["#ef3124", "#f3604f", "#f8a296"]}
-              size="md"
-              frame={false}
-              animationTime={650}
-              particleCount={9}
-              timeVariance={80}
-              spread={32}
-              gooeyness={0.35}
-              wobble={0.2}
-              hoverEffect={false}
-            />
-          </div>
+          <nav id="site-navigation" className="sh-nav vf-desktop-nav vf-clean-nav" aria-label="Главная навигация">
+            {NAV.map(([label, id]) => (
+              <button key={id} type="button" aria-current={activeSection === id ? "location" : undefined}
+                onClick={() => { setActiveSection(id); go(id); }}>
+                {activeSection === id && <motion.span className="vf-nav-active" layoutId="public-navigation" transition={{ duration: .3, ease: [.22, 1, .36, 1] }} />}
+                <span>{label}</span>
+              </button>
+            ))}
+          </nav>
         )}
         {cabinet && (
           <span className="vf-cabinet-header-label">

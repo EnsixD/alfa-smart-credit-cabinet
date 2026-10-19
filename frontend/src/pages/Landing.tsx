@@ -23,7 +23,7 @@ import SmoothHeight from "../components/SmoothHeight";
 import FadeContent from "../components/reactbits/FadeContent";
 import SplitText from "../components/reactbits/SplitText";
 import BrandField from "../components/BrandField";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion, useScroll, useTransform, useReducedMotion } from "motion/react";
 import { AnimatedNumber } from "../anim";
 import SpotlightCard from "../components/reactbits/SpotlightCard";
 import { homeOf, useAuth } from "../auth";
@@ -79,6 +79,9 @@ const JOURNEY = [
 ];
 
 export default function Landing() {
+  const { scrollY } = useScroll();
+  const reducedMotion = useReducedMotion();
+  const backgroundY = useTransform(scrollY, [0, 1000], [0, 180]);
   const { user } = useAuth();
   const { hash } = useLocation();
   const [products, setProducts] = useState<any[]>([]);
@@ -122,7 +125,9 @@ export default function Landing() {
       <SiteHeader />
       <main>
         <section className="vx-hero" id="business">
-          <BrandField className="vf-hero-field" />
+          <motion.div className="vf-hero-parallax" style={{ y: reducedMotion ? 0 : backgroundY }} aria-hidden="true">
+            <BrandField className="vf-hero-field" />
+          </motion.div>
           <div className="vx-hero-halo" aria-hidden="true" />
           <FadeContent
             trigger="mount"
