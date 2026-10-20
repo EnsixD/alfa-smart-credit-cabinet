@@ -25,6 +25,7 @@ import {
 } from "../components/Status";
 import { DisburseOverlay, DisbursedView } from "../components/Disbursed";
 import { AnimatePresence, motion } from "motion/react";
+import Tracker from "../components/Tracker";
 import BrandField from "../components/BrandField";
 import { useAuth } from "../auth";
 
@@ -435,169 +436,11 @@ function Tasks({ app, reload }: { app: any; reload: () => void }) {
   );
 }
 
-function Details({ app, reload }: { app: any; reload: () => void }) {
-  const [tab, setTab] = useState(app.checks.length ? "checks" : "chat");
-  const [text, setText] = useState("");
-  const [checkPage, setCheckPage] = useState(0);
-  const se = app.score_explained;
-  const send = async () => {
-    if (!text.trim()) return;
-    await api(`/api/applications/${app.id}/messages`, { body: { text } });
-    setText("");
-    reload();
-  };
-  return (
-    <div className="card vx-details-card">
-      <div
-        className="vx-workspace-tabs"
-        role="group"
-        aria-label="Данные заявки"
-      >
-        {[
-          ["checks", `Проверки · ${app.checks.length}`],
-          ...(se ? [["score", "Оценка"]] : []),
-          ["chat", `Чат · ${app.messages.length}`],
-        ].map(([key, title]) => (
-          <button
-            key={key}
-            aria-pressed={tab === key}
-            onClick={() => setTab(key)}
-          >
-            {tab === key && (
-              <motion.span
-                layoutId="details-active"
-                className="vx-workspace-active"
-              />
-            )}
-            <span>{title}</span>
-          </button>
-        ))}
-      </div>
-      <AnimatePresence mode="wait" initial={false}>
-        <motion.div
-          key={tab}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -8 }}
-          transition={{ duration: 0.2 }}
-          className="vx-details-content"
-        >
-          {tab === "checks" && (
-            <>
-              {app.checks.length ? (
-                <>
-                  <motion.div
-                    key={checkPage}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                  >
-                    {app.checks
-                      .slice(checkPage * 4, checkPage * 4 + 4)
-                      .map((c: any, i: number) => (
-                        <CheckRow key={i} c={c} />
-                      ))}
-                  </motion.div>
-                  <div className="vx-pagination">
-                    <button
-                      disabled={checkPage === 0}
-                      onClick={() => setCheckPage(checkPage - 1)}
-                    >
-                      ← Назад
-                    </button>
-                    <span>
-                      {checkPage + 1} / {Math.ceil(app.checks.length / 4)}
-                    </span>
-                    <button
-                      disabled={(checkPage + 1) * 4 >= app.checks.length}
-                      onClick={() => setCheckPage(checkPage + 1)}
-                    >
-                      Далее →
-                    </button>
-                  </div>
-                </>
-              ) : (
-                <p className="muted">Проверки начнутся сразу после отправки.</p>
-              )}
-            </>
-          )}
-          {tab === "score" && se && (
-            <div className="grid grid-2e">
-              <div>
-                <h3 className="pos">Помогло</h3>
-                {se.positive.map((x: string) => (
-                  <div key={x} className="factor">
-                    <span>{x}</span>
-                    <CircleCheck size={16} className="pos" />
-                  </div>
-                ))}
-              </div>
-              <div>
-                <h3 className="neg">Снизило оценку</h3>
-                {se.negative.length ? (
-                  se.negative.map((x: string) => (
-                    <div key={x} className="factor">
-                      <span>{x}</span>
-                      <X size={16} className="neg" />
-                    </div>
-                  ))
-                ) : (
-                  <p>Ничего — отличный результат</p>
-                )}
-              </div>
-            </div>
-          )}
-          {tab === "chat" && (
-            <>
-              <div className="vx-chat-messages">
-                {!app.messages.length && (
-                  <p className="muted">
-                    Задайте вопрос — ответит кредитный специалист.
-                  </p>
-                )}
-                {app.messages.map((m: any) => (
-                  <div
-                    key={m.id}
-                    className={
-                      "bubble " + (m.author_role === "CLIENT" ? "me" : "bot")
-                    }
-                  >
-                    <div className="small faint">
-                      {m.author_name} · {dt(m.created_at)}
-                    </div>
-                    {m.text}
-                  </div>
-                ))}
-              </div>
-              <div
-                className="row"
-                style={{ marginTop: 16, flexWrap: "nowrap" }}
-              >
-                <input
-                  aria-label="Сообщение банку"
-                  value={text}
-                  onChange={(e) => setText(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && send()}
-                  placeholder="Сообщение банку"
-                />
-                <button className="btn dark" onClick={send}>
-                  Отправить
-                </button>
-              </div>
-            </>
-          )}
-        </motion.div>
-      </AnimatePresence>
-    </div>
-  );
-}
-
 export default function ApplicationPage() {
   const { id } = useParams();
   const [app, setApp] = useState<any>(null);
   const [overlay, setOverlay] = useState(false);
   const [details, setDetails] = useState(false);
-  const [workspaceTab, setWorkspaceTab] = useState("overview");
-  const [historyPage, setHistoryPage] = useState(0);
   const reload = () => api(`/api/applications/${id}`).then(setApp);
   // полноэкранная анимация зачисления: показываем один раз, когда заявка впервые видна выданной
   useEffect(() => {
@@ -615,8 +458,6 @@ export default function ApplicationPage() {
   useEffect(() => {
     setApp(null);
     setDetails(false);
-    setWorkspaceTab("overview");
-    setHistoryPage(0);
     reload();
     // события конвейера приходят по SSE — карточка обновляется без перезагрузки
     return subscribe(Number(id), () => {
@@ -634,8 +475,6 @@ export default function ApplicationPage() {
       </div>
     );
   const s = app.status.code;
-  const live = IN_PROGRESS.includes(s);
-  const tone = statusTone(s);
 
   if (s === "DISBURSED" && !details) {
     return (
@@ -643,10 +482,7 @@ export default function ApplicationPage() {
         <DisbursedView
           app={app}
           onReplay={() => setOverlay(true)}
-          onDetails={() => {
-            setDetails(true);
-            setWorkspaceTab("details");
-          }}
+          onDetails={() => setDetails(true)}
         />
         {overlay && (
           <DisburseOverlay app={app} onClose={() => setOverlay(false)} />
@@ -655,226 +491,12 @@ export default function ApplicationPage() {
     );
   }
 
-  return (
-    <div className="vx-application-workspace">
-      <div className="vx-workspace-header">
-        <Link to="/cabinet/applications" className="cr-back">
-          ← Все заявки
-        </Link>
-        <div
-          className="vx-workspace-tabs"
-          role="group"
-          aria-label="Раздел заявки"
-        >
-          {[
-            ["overview", "Обзор"],
-            ["terms", "Условия"],
-            ["details", "Проверки и связь"],
-            ["history", "История"],
-          ].map(([key, title]) => (
-            <button
-              key={key}
-              aria-pressed={workspaceTab === key}
-              onClick={() => setWorkspaceTab(key)}
-            >
-              {workspaceTab === key && (
-                <motion.span
-                  layoutId="workspace-active"
-                  className="vx-workspace-active"
-                />
-              )}
-              <span>{title}</span>
-            </button>
-          ))}
-        </div>
-      </div>
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={workspaceTab}
-          className={"vx-application-pane vx-pane-" + workspaceTab}
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -8 }}
-          transition={{ duration: 0.22 }}
-        >
-          <div className="grid grid-2">
-            <div className="stack">
-              <div className="card status-card">
-                <div
-                  className="row between"
-                  style={{ alignItems: "flex-start" }}
-                >
-                  <div>
-                    <div className="eyebrow">Заявка {app.number}</div>
-                    <h1 style={{ margin: 0, fontSize: 28 }}>
-                      {app.product_name}
-                    </h1>
-                    <div className="muted" style={{ marginTop: 4 }}>
-                      {money(app.amount)} · {months(app.term_months)} ·{" "}
-                      {app.purpose_title}
-                    </div>
-                  </div>
-                  <StatusBadge status={app.status} />
-                </div>
-                <Progress status={app.status} />
-                <div className={"status-line " + tone}>
-                  {live ? (
-                    <span
-                      className="spin"
-                      style={{ width: 18, height: 18, borderWidth: 2.5 }}
-                    />
-                  ) : (
-                    <Clock size={18} />
-                  )}
-                  <div>
-                    <b>{app.status.title}</b>
-                    <span>{app.status.hint}</span>
-                  </div>
-                </div>
-              </div>
-
-              <section className="vx-application-brief card">
-                <span className="vx-eyebrow">Финансирование в деталях</span>
-                <h2>{app.purpose_title || "Ваши планы"}</h2>
-                <div>
-                  <span>
-                    Сумма<b>{money(app.offer?.amount || app.amount)}</b>
-                  </span>
-                  <span>
-                    Срок
-                    <b>{months(app.offer?.term_months || app.term_months)}</b>
-                  </span>
-                  {app.offer && (
-                    <>
-                      <span>
-                        Ставка<b>{app.offer.rate}%</b>
-                      </span>
-                      <span>
-                        Платёж в месяц<b>{money(app.offer.monthly_payment)}</b>
-                      </span>
-                    </>
-                  )}
-                </div>
-                <p>
-                  Условия, решения и запросы банка собраны здесь. Проверки и
-                  переписка доступны в соседнем разделе.
-                </p>
-              </section>
-              {s === "NEEDS_INFO" && <Tasks app={app} reload={reload} />}
-              {(s === "APPROVED" || s === "COUNTER_OFFER") && app.offer && (
-                <OfferCard app={app} reload={reload} />
-              )}
-              {s === "SIGNING" && <SigningCard app={app} reload={reload} />}
-              {s === "DISBURSED" && (
-                <button
-                  className="btn secondary"
-                  style={{ alignSelf: "flex-start" }}
-                  onClick={() => setDetails(false)}
-                >
-                  ← К итогам выдачи
-                </button>
-              )}
-              {s === "REJECTED" && app.decision && (
-                <div className="card action-card">
-                  <div className="ac-head">
-                    <div className="ac-ico bad">
-                      <X size={20} />
-                    </div>
-                    <div>
-                      <h2>Сейчас не можем выдать кредит</h2>
-                      <p className="muted small">
-                        Это не окончательно — вот что поможет
-                      </p>
-                    </div>
-                  </div>
-                  <div className="reasons">
-                    {app.decision.reasons.map((r: string) => (
-                      <div key={r}>
-                        <X size={15} className="neg" />
-                        {r}
-                      </div>
-                    ))}
-                  </div>
-                  {app.decision.recommendations?.length > 0 && (
-                    <div className="reasons ok">
-                      {app.decision.recommendations.map((r: string) => (
-                        <div key={r}>
-                          <ArrowRight size={15} className="pos" />
-                          {r}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  <div>
-                    <Link className="btn" to="/cabinet/new">
-                      Подобрать другой вариант
-                    </Link>
-                  </div>
-                </div>
-              )}
-              <div className="vx-application-details">
-                <Details app={app} reload={reload} />
-              </div>
-            </div>
-            <div>
-              <div className="card" style={{ position: "sticky", top: 86 }}>
-                <div className="row between">
-                  <h2 style={{ margin: 0 }}>История</h2>
-                  {live && <span className="badge ok live">online</span>}
-                </div>
-                <div
-                  style={{ marginTop: 16, maxHeight: "55vh", overflow: "auto" }}
-                >
-                  <motion.div
-                    key={historyPage}
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                  >
-                    <Timeline
-                      items={[...app.timeline]
-                        .reverse()
-                        .slice(historyPage * 4, historyPage * 4 + 4)
-                        .reverse()}
-                    />
-                  </motion.div>
-                  <div className="vx-pagination">
-                    <button
-                      disabled={historyPage === 0}
-                      onClick={() => setHistoryPage(historyPage - 1)}
-                    >
-                      ← Новее
-                    </button>
-                    <span>
-                      {historyPage + 1} / {Math.ceil(app.timeline.length / 4)}
-                    </span>
-                    <button
-                      disabled={(historyPage + 1) * 4 >= app.timeline.length}
-                      onClick={() => setHistoryPage(historyPage + 1)}
-                    >
-                      Ранее →
-                    </button>
-                  </div>
-                </div>
-                {!app.status.final &&
-                  !["DISBURSING", "SIGNING"].includes(s) && (
-                    <button
-                      className="btn ghost small"
-                      style={{ marginTop: 8 }}
-                      onClick={() =>
-                        confirm("Отменить заявку?") &&
-                        api(`/api/applications/${app.id}/cancel`, {
-                          method: "POST",
-                        }).then(reload)
-                      }
-                    >
-                      Отменить заявку
-                    </button>
-                  )}
-              </div>
-            </div>
-          </div>
-        </motion.div>
-      </AnimatePresence>
-    </div>
+  const actions = (
+    <>
+      {s === "NEEDS_INFO" && <Tasks app={app} reload={reload} />}
+      {(s === "APPROVED" || s === "COUNTER_OFFER") && app.offer && <OfferCard app={app} reload={reload} />}
+      {s === "SIGNING" && <SigningCard app={app} reload={reload} />}
+    </>
   );
+  return <Tracker app={app} reload={reload} actions={actions} onBackToResult={s === "DISBURSED" ? () => setDetails(false) : undefined} />;
 }
