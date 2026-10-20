@@ -484,7 +484,11 @@ function ElasticSlider({
 
   useEffect(() => {
     const m = motion.current;
-    return () => cancelAnimationFrame(m.raf);
+    return () => {
+      cancelAnimationFrame(m.raf);
+      // сбрасываем флаг, иначе после повторного монтирования (StrictMode) kick() больше не запустит анимацию
+      m.raf = 0;
+    };
   }, []);
 
   const along = (event: ReactPointerEvent<HTMLDivElement>) => {
