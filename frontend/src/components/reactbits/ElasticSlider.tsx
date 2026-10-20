@@ -273,10 +273,17 @@ function ElasticSlider({
       ? `inset(${to}% 0 ${from}% 0 round ${round}px)`
       : `inset(0 ${to}% 0 ${from}% round ${round}px)`;
     const position = atEnd ? p * length * along : length - (1 - p) * length * along;
+    // ручка ходит в пределах полосы: на краях её центр отступает на полразмера, чтобы не выезжать за трек
+    const half = (thumbRef.current?.offsetWidth || 0) / 2;
+    const inner = Math.max(0, length - half * 2);
+    const thumbPosition = atEnd ? half + p * inner * along : length - half - (1 - p) * inner * along;
+    const thumbShift = s.vertical
+      ? `translate3d(0, ${(-thumbPosition).toFixed(2)}px, 0)`
+      : `translate3d(${thumbPosition.toFixed(2)}px, 0, 0)`;
     const shift = s.vertical
       ? `translate3d(0, ${(-position).toFixed(2)}px, 0)`
       : `translate3d(${position.toFixed(2)}px, 0, 0)`;
-    if (thumbRef.current) thumbRef.current.style.transform = `${shift} scale(${(1 + 0.12 * m.a).toFixed(3)})`;
+    if (thumbRef.current) thumbRef.current.style.transform = `${thumbShift} scale(${(1 + 0.12 * m.a).toFixed(3)})`;
     if (bubbleRef.current) {
       const center = s.vertical ? 'translate(0, 50%)' : 'translate(-50%, 0)';
       bubbleRef.current.style.transform = `${shift} ${center} scale(${(0.7 + 0.3 * m.a).toFixed(3)})`;
