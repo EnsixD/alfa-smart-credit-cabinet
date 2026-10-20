@@ -25,6 +25,7 @@ import "./studio.css";
 import "./credit.css";
 import "./motion-design.css";
 import "./experience.css";
+import "./wizard2.css";
 
 export default function App() {
   const [user, setUser] = useState<User | null>(getStoredUser());
