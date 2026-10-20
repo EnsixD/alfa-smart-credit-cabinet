@@ -77,7 +77,7 @@
 .wz2-presets button.on, .wz2-ticks button.on { background: var(--text); color: #fff; border-color: var(--text); }
 .wz2-term-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
 .wz2-term-top span { font-size: 13px; color: var(--text-2); } .wz2-term-top b { font-size: 34px; font-weight: 800; letter-spacing: -.02em; line-height: 1; color: var(--text); font-variant-numeric: tabular-nums; display: inline-block; }
-.wz2-ticks { display: flex; justify-content: space-between; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
+.wz2-ticks { display: flex; justify-content: space-between; gap: 6px; margin-top: 4px; flex-wrap: wrap; }
 .wz2-ticks button { height: 28px; padding: 0 10px; font-size: 12px; }
 
 .wz2-flow { overflow: hidden; }
@@ -194,11 +194,3 @@
 .wz2-step.go:hover .wz2-dot { border-color: var(--red); }
 .wz2-step.done.go small { color: var(--red); font-weight: 600; }
 
-.wz2-slider { width: 100%; }
-
-/* ползунок не меняет толщину скачками — растёт только ручка, через transform */
-.wz2-slider .elastic-slider__thumb { transition: box-shadow .25s ease; }
-.wz2-slider:hover .elastic-slider__thumb { box-shadow: 0 0 0 6px rgba(239, 49, 36, .15); }
-/* ручка на краю выступает за полосу на полразмера + кольцо — оставляем место до иконок */
-.wz2-slider .elastic-slider__icon:first-child { margin-right: 12px; }
-.wz2-slider .elastic-slider__icon:last-child { margin-left: 12px; }

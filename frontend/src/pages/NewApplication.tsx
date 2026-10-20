@@ -11,7 +11,7 @@ import ClickSpark from "../components/reactbits/ClickSpark";
 import Magnet from "../components/reactbits/Magnet";
 import Particles from "../components/reactbits/Particles";
 import ShinyText from "../components/reactbits/ShinyText";
-import ElasticSlider from "../components/reactbits/ElasticSlider";
+import TermSlider from "../components/TermSlider";
 import SpotlightCard from "../components/reactbits/SpotlightCard";
 
 const STEPS = [
@@ -269,7 +269,7 @@ export default function NewApplication() {
                     </div>
                     <div className="wz2-term">
                       <div className="wz2-term-top"><span>Срок</span><b><AnimatedNumber value={form.term_months} format={(v) => months(Math.round(v))} duration={0.45} /></b></div>
-                      <ElasticSlider value={form.term_months} startingValue={1} maxValue={84} isStepped stepSize={1} onChange={(v) => setForm((f: any) => ({ ...f, term_months: Math.round(v) }))} onChangeEnd={(v) => set({ term_months: Math.round(v) })} valuePosition="none" thickness={10} activeThickness={10} growOnHover={false} rangeColor="#ef3124" trackColor="#e6e7ea" iconColor="#8e9199" thumb thumbColor="#ffffff" ariaLabel="Срок кредита" className="wz2-slider" />
+                      <TermSlider value={form.term_months} min={1} max={84} label="Срок кредита" format={months} onChange={(v) => setForm((f: any) => ({ ...f, term_months: v }))} onChangeEnd={(v) => set({ term_months: v })} />
                       <div className="wz2-ticks">{[["1 мес", 1], ["1 год", 12], ["3 года", 36], ["5 лет", 60], ["7 лет", 84]].map(([t, m]) => <button key={t} onClick={() => set({ term_months: m })} className={form.term_months === m ? "on" : ""}>{t}</button>)}</div>
                     </div>
                   </motion.section>
