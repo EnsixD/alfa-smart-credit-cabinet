@@ -60,24 +60,36 @@ export function Logo({
 let navLockUntil = 0;
 export const navLocked = () => Date.now() < navLockUntil;
 
+// незавершённая прокрутка от предыдущего клика: при новом клике её хвосты снимаются,
+// иначе старый таймер возвращает страницу к прошлому разделу
+let cancelScroll: (() => void) | null = null;
+
 /** Плавная прокрутка к разделу: верх раздела встаёт ровно под шапку. */
 export function scrollToId(id: string) {
   const el = document.getElementById(id);
   if (!el) return;
+  cancelScroll?.();
   const header = (document.querySelector(".site-header") as HTMLElement | null)?.offsetHeight || 0;
   const first = el.closest("main")?.querySelector("section[id]") === el;
-  const top = first ? 0 : Math.max(0, el.getBoundingClientRect().top + window.scrollY - header);
+  const target = () => (first ? 0 : Math.max(0, el.getBoundingClientRect().top + window.scrollY - header));
   const smooth = !window.matchMedia("(prefers-reduced-motion: reduce)").matches && !document.documentElement.classList.contains("reduce-motion");
-  navLockUntil = Date.now() + (smooth ? 1200 : 100);
-  window.scrollTo({ top, behavior: smooth ? "smooth" : "auto" });
-  const done = () => { navLockUntil = 0; window.removeEventListener("scrollend", done); window.dispatchEvent(new Event("scroll")); };
+  navLockUntil = Infinity;
+  window.scrollTo({ top: target(), behavior: smooth ? "smooth" : "auto" });
+  let lastY = window.scrollY;
+  let timer = 0;
+  const cleanup = () => { window.removeEventListener("scrollend", done); clearTimeout(timer); cancelScroll = null; };
+  function done() { cleanup(); navLockUntil = 0; window.dispatchEvent(new Event("scroll")); }
+  // страховка: если прокрутка встала, не дойдя до цели (вкладка в фоне), довозим мгновенно
+  const check = () => {
+    const y = window.scrollY;
+    if (Math.abs(y - target()) <= 2) return done();
+    if (y === lastY) { window.scrollTo({ top: target() }); return done(); }
+    lastY = y;
+    timer = window.setTimeout(check, 250);
+  };
   window.addEventListener("scrollend", done);
-  // если вкладка в фоне и плавная прокрутка не дошла — довозим мгновенно
-  setTimeout(() => {
-    const now = el.getBoundingClientRect().top + window.scrollY - header;
-    if (!first && Math.abs(window.scrollY - now) > 4) window.scrollTo({ top: now });
-    done();
-  }, 1250);
+  timer = window.setTimeout(check, smooth ? 400 : 50);
+  cancelScroll = cleanup;
 }
 
 /** Переход к разделу главной; с других страниц — сначала на главную. */

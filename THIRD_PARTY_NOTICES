@@ -22,8 +22,9 @@ pytest 8.3.4 (только тесты)  MIT
 ------------------------------------------------------------------
 React 18.3.1 / React DOM ... MIT
 React Router 6.28.0 ........ MIT
-GSAP 3.12.5 ................ Standard "no charge" GSAP License (https://gsap.com/standard-license) — анимации
+GSAP 3.15.0 / @gsap/react 2.1.2 ... Standard "no charge" GSAP License (https://gsap.com/standard-license) — анимации
 lucide-react 0.460.0 ...... ISC        — иконки интерфейса
+Motion 14.4.0 .............. MIT        — анимации интерфейса
 Vite 5.4.11 ................ MIT        — сборка (только на этапе build)
 TypeScript 5.6.3 ........... Apache-2.0 — (только на этапе build)
 Шрифты Onest и Inter ....... SIL OFL 1.1 (Google Fonts); при недоступности — системный шрифт
@@ -76,9 +77,7 @@ Additional React Bits components (same upstream and license above):
 SplitText: https://reactbits.dev/r/SplitText-TS-CSS.json
 SpotlightCard: https://reactbits.dev/r/SpotlightCard-TS-CSS.json
 GooeyNav: https://reactbits.dev/r/GooeyNav-TS-CSS.json
-GooeyNav corners and text clipping adapted to 7px; navigation has an accessible label.
+BlurText, ShinyText, ClickSpark, Particles, Threads: https://reactbits.dev
 Motion for React: https://github.com/motiondivision/motion (MIT).
 
-PortfolioGrid adapts the travelling square-wave algorithm from the project owner's
-Ensi - Portfolio v2/src/Background.tsx, with a red palette and container-aware canvas.
 The original Vektor monogram and README banner are project-specific generated artwork.

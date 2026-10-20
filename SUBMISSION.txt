@@ -1,0 +1,42 @@
+ВЕКТОР · УМНЫЙ КРЕДИТНЫЙ КАБИНЕТ ПРЕДПРИНИМАТЕЛЯ
+Решение кейса «Альфа Хак» — цифровой кредитный конвейер для малого и микробизнеса
+
+Репозиторий:        https://github.com/EnsixD/alfa-smart-credit-cabinet
+Версия на дедлайн:  тег <ТЕГ>, коммит <HASH>
+Видеодемонстрация:  <ССЫЛКА НА ВИДЕО>
+Онлайн-версия:      <ССЫЛКА, если развёрнута>
+
+ЗАПУСК ОДНОЙ КОМАНДОЙ
+  Нужен Docker Desktop (Windows / macOS) или Docker Engine 24+ с Compose v2.
+  Windows:        двойной клик по start.bat
+  macOS / Linux:  ./start.sh
+  Вручную:        docker compose up --build
+
+  Скрипт сам соберёт и поднимет все сервисы (PostgreSQL, API, worker, mock-gateway,
+  веб-интерфейс), дождётся готовности и откроет браузер.
+  Сайт и кабинеты:   http://localhost:8080
+  Документация API:  http://localhost:8000/docs
+  Остановка:         stop.bat  или  docker compose down
+
+ДЕМОАККАУНТЫ (пароль у всех — demo123)
+  На странице входа — кнопка «Открыть демоверсию», вход в один клик.
+  client_good        кофейня: автоодобрение, подписание, выдача
+  client_counter     встречное предложение банка
+  client_info        запрос дополнительных документов
+  client_manual      ручное рассмотрение и эскалация
+  client_reject      отказ с рекомендациями
+  client_young       молодой бизнес, другая лента новостей
+  underwriter        специалист банка
+  approver           руководитель, решения по эскалациям
+  admin              правила, аналитика, имитация сбоев интеграций
+
+ГДЕ ЧТО ЛЕЖИТ
+  README.md                    назначение, архитектура, запуск, переменные окружения
+  docs/test-scenarios.md       пошаговые сценарии проверки
+  docs/architecture.md         архитектурная схема
+  docs/api.md, openapi.json    описание API, OpenAPI
+  docs/postman_collection.json коллекция запросов
+  docs/state-diagram.md        диаграмма состояний заявки
+  docs/data-model.md           модель данных
+  docs/scoring.md              скоринг и кредитная политика
+  THIRD_PARTY_NOTICES          сторонние компоненты и смоделированные интеграции
