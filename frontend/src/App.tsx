@@ -13,8 +13,8 @@ import {
   ApplicationsList,
   DocumentsPage,
   LoansPage,
-  SettingsPage,
 } from "./pages/CabinetPages";
+import Settings from "./pages/Settings";
 import BankQueue from "./pages/BankQueue";
 import BankApplication from "./pages/BankApplication";
 import BankAnalytics from "./pages/BankAnalytics";
@@ -61,7 +61,7 @@ export default function App() {
               <Route path="loans" element={<LoansPage />} />
               <Route path="loans/:id" element={<LoanDetails />} />
               <Route path="documents" element={<DocumentsPage />} />
-              <Route path="settings" element={<SettingsPage />} />
+              <Route path="settings" element={<Settings />} />
             </Route>
           )}
           {user && !isClient && (
