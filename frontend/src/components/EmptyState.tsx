@@ -73,7 +73,7 @@ export default function EmptyState({ kind, compact = false }: { kind: Kind; comp
         <motion.span className="es-spark s2" initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.6 }} />
       </div>
       <div className="es-copy">
-        <BlurText key={c.title} text={c.title} className="es-title" animateBy="words" direction="bottom" delay={70} trigger="load" />
+        <BlurText key={c.title} text={c.title} className="es-title" animateBy="words" direction="bottom" delay={25} stepDuration={0.18} trigger="load" />
         <motion.p initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35, duration: 0.45 }}>{c.text}</motion.p>
         {c.cta && (
           <motion.div className="es-actions" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.45 }}>
