@@ -158,7 +158,7 @@ function Showcase() {
 
 function Hero({ active }: { active: any }) {
   return (
-    <motion.section className="db-hero" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, ease: EASE }}>
+    <motion.section className="db-hero" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.55, ease: EASE }}>
       <div className="db-hero-field" aria-hidden="true"><BrandField /></div>
       <div className="db-hero-shade" aria-hidden="true" />
       {active ? (
