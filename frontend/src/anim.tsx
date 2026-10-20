@@ -38,10 +38,11 @@ export function AnimatedNumber({ value, format = (v: number) => Math.round(v).to
     const node = el.current;
     if (!node) return;
     if (reduced()) { node.textContent = format(value); prev.current = value; return; }
+    // анимация продолжается с того числа, что сейчас на экране, — так смена значения
+    // посреди анимации (или повторный запуск эффекта в StrictMode) не даёт скачка
     const o = { v: prev.current };
-    const t = gsap.to(o, { v: value, duration, ease: "power2.out", onUpdate: () => { node.textContent = format(o.v); } });
-    prev.current = value;
-    return () => { t.kill(); node.textContent = format(value); };
+    const t = gsap.to(o, { v: value, duration, ease: "power2.out", onUpdate: () => { prev.current = o.v; node.textContent = format(o.v); } });
+    return () => { t.kill(); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
   return <span ref={el}>{format(prev.current)}</span>;
