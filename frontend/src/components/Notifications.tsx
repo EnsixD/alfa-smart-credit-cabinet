@@ -66,7 +66,7 @@ function Toasts({ items, onClose, onOpen }: { items: any[]; onClose: (id: number
           const p = parse(n);
           const Icon = KIND_ICON[p.kind];
           return (
-            <motion.div key={n.id} layout className={"nt-toast " + p.kind} initial={{ opacity: 0, x: 60, scale: 0.95 }} animate={{ opacity: 1, x: 0, scale: 1 }} exit={{ opacity: 0, x: 60, scale: 0.95, transition: { duration: 0.2 } }} transition={{ type: "spring", stiffness: 380, damping: 30 }} onClick={() => onOpen(n)}>
+            <motion.div key={n.id} layout className={"nt-toast nk-" + p.kind} initial={{ opacity: 0, x: 60, scale: 0.95 }} animate={{ opacity: 1, x: 0, scale: 1 }} exit={{ opacity: 0, x: 60, scale: 0.95, transition: { duration: 0.2 } }} transition={{ type: "spring", stiffness: 380, damping: 30 }} onClick={() => onOpen(n)}>
               <span className="nt-ico"><Icon size={18} /></span>
               <div className="nt-toast-txt">
                 <b>{p.title}</b>
@@ -202,7 +202,7 @@ export default function Notifications() {
                         const p = parse(n);
                         const Icon = KIND_ICON[p.kind];
                         return (
-                          <motion.div key={n.id} layout className={"nt-item " + p.kind + (isNew(n) ? " new" : "")} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0, transition: { delay: Math.min(i, 8) * 0.03 } }} exit={{ opacity: 0, x: 40, height: 0, marginTop: 0, paddingTop: 0, paddingBottom: 0, transition: { duration: 0.25 } }} onClick={() => go(n)}>
+                          <motion.div key={n.id} layout className={"nt-item nk-" + p.kind + (isNew(n) ? " new" : "")} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0, transition: { delay: Math.min(i, 8) * 0.03 } }} exit={{ opacity: 0, x: 40, height: 0, marginTop: 0, paddingTop: 0, paddingBottom: 0, transition: { duration: 0.25 } }} onClick={() => go(n)}>
                             <span className="nt-ico"><Icon size={17} /></span>
                             <div className="nt-txt">
                               <b>{p.title}</b>

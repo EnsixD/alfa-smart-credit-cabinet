@@ -96,15 +96,15 @@ function StageRail({ app, issues }: { app: any; issues: Issue[] }) {
         const bad = issues.some((x) => x.stage === i && x.tone === "bad");
         const time = stageTime(app, i);
         return (
-          <motion.div key={name} className={"tr-stage " + state} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08 * i, duration: 0.4, ease: EASE }}>
+          <motion.div key={name} className={"tr-stage " + state + " is-" + state} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08 * i, duration: 0.4, ease: EASE }}>
             <span className="tr-node">
               {state === "current" && <span className="tr-node-pulse" />}
               {state === "done" ? <Check size={18} strokeWidth={3} /> : state === "failed" ? <X size={18} strokeWidth={3} /> : state === "current" ? <Loader size={18} className="spin-ico" /> : state === "warn" ? <AlertTriangle size={18} /> : <Icon size={18} />}
-              {n > 0 && <motion.em className={bad ? "bad" : ""} initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 500, damping: 20, delay: 0.5 }}>{n}</motion.em>}
+              {n > 0 && <motion.em className={bad ? "is-bad" : ""} initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 500, damping: 20, delay: 0.5 }}>{n}</motion.em>}
             </span>
             <b>{name}</b>
             <small>{state === "current" ? "сейчас" : state === "warn" ? "нужно ваше действие" : state === "failed" ? "остановлено" : time || "впереди"}</small>
-            {n > 0 && <span className={"tr-stage-flag " + (bad ? "bad" : "warn")}>{n} {n === 1 ? "замечание" : n < 5 ? "замечания" : "замечаний"}</span>}
+            {n > 0 && <span className={"tr-stage-flag " + (bad ? "is-bad" : "is-warn")}>{n} {n === 1 ? "замечание" : n < 5 ? "замечания" : "замечаний"}</span>}
           </motion.div>
         );
       })}
@@ -118,14 +118,14 @@ function Attention({ app, issues }: { app: any; issues: Issue[] }) {
   if (!issues.length) {
     if (!app.checks.length) return null;
     return (
-      <motion.section className="tr-attn clean" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, ease: EASE }}>
+      <motion.section className="tr-attn is-clean" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, ease: EASE }}>
         <span className="tr-attn-ico"><ShieldCheck size={22} /></span>
         <div><h2>Замечаний нет</h2><p>Все проверки пройдены — от вас сейчас ничего не требуется.</p></div>
       </motion.section>
     );
   }
   return (
-    <motion.section className={"tr-attn " + (bad ? "bad" : "warn")} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, ease: EASE }}>
+    <motion.section className={"tr-attn " + (bad ? "is-bad" : "is-warn")} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, ease: EASE }}>
       <div className="tr-attn-head">
         <span className="tr-attn-ico">{bad ? <XCircle size={22} /> : <AlertTriangle size={22} />}</span>
         <div>
@@ -135,7 +135,7 @@ function Attention({ app, issues }: { app: any; issues: Issue[] }) {
       </div>
       <motion.ul className="tr-issues" initial="h" animate="s" variants={{ s: { transition: { staggerChildren: 0.06, delayChildren: 0.15 } } }}>
         {issues.map((x, i) => (
-          <motion.li key={i} className={x.tone} variants={{ h: { opacity: 0, x: -10 }, s: { opacity: 1, x: 0 } }}>
+          <motion.li key={i} className={"is-" + x.tone} variants={{ h: { opacity: 0, x: -10 }, s: { opacity: 1, x: 0 } }}>
             <span className="ii"><x.icon size={17} /></span>
             <div><b>{x.title}</b><p>{x.text}</p></div>
             <small>{x.source}</small>
@@ -171,7 +171,7 @@ function Checks({ app }: { app: any }) {
         {list.map((c: any, i: number) => {
           const ui = CHECK_UI[c.status] || CHECK_UI.UNAVAILABLE;
           return (
-            <motion.div key={c.source + i} className={"tr-check " + ui.tone} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 * i, duration: 0.35 }}>
+            <motion.div key={c.source + i} className={"tr-check is-" + ui.tone} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 * i, duration: 0.35 }}>
               <span className="ci"><ui.icon size={17} /></span>
               <div><b>{CHECK_TITLES[c.source] || c.source}</b><p>{c.summary}</p></div>
               <em>{ui.label}</em>
@@ -239,8 +239,8 @@ function History({ app }: { app: any }) {
           {shown.map((t: any, i: number) => {
             const tone = t.to_status ? statusTone(t.to_status) : "info";
             return (
-              <motion.li key={t.id} className={tone + (i === 0 ? " first" : "")} layout initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }}>
-                <span className="dot" />
+              <motion.li key={t.id} className={"is-" + tone + (i === 0 ? " first" : "")} layout initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }}>
+                <span className="tr-dot" />
                 <b>{t.title}</b>
                 {t.message && t.message !== t.title && <p>{t.message}</p>}
                 <small>{t.actor} · {dt(t.created_at)}</small>
@@ -268,7 +268,7 @@ export default function Tracker({ app, reload, actions, onBackToResult }: { app:
         {onBackToResult && <button className="tr-back" onClick={onBackToResult}>К итогам выдачи <ArrowRight size={15} /></button>}
       </div>
 
-      <motion.header className={"tr-hero " + tone} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease: EASE }}>
+      <motion.header className={"tr-hero is-" + tone} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease: EASE }}>
         <div className="tr-hero-main">
           <span className="tr-eyebrow">Заявка {app.number}</span>
           <BlurText key={app.product_name} text={app.product_name || "Заявка на кредит"} className="tr-h1" animateBy="words" delay={30} stepDuration={0.2} trigger="load" />
@@ -280,7 +280,7 @@ export default function Tracker({ app, reload, actions, onBackToResult }: { app:
             {app.purpose_title && <span>{app.purpose_title}</span>}
           </div>
         </div>
-        <div className={"tr-now " + tone}>
+        <div className={"tr-now is-" + tone}>
           <span className="tr-now-ico">{live ? <Loader size={20} className="spin-ico" /> : tone === "ok" ? <CircleCheck size={20} /> : tone === "bad" ? <XCircle size={20} /> : tone === "warn" ? <AlertTriangle size={20} /> : <ShieldCheck size={20} />}</span>
           <div>
             <small>Сейчас</small>

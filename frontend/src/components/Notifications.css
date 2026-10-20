@@ -6,12 +6,12 @@
 
 /* цвета типов */
 .nt-ico { flex: none; width: 36px; height: 36px; border-radius: 11px; display: grid; place-items: center; background: var(--surface-2); color: var(--text-2); }
-.ok > .nt-ico, .money > .nt-ico { background: #e3f6ec; color: #0a8a4c; }
-.warn > .nt-ico { background: #fff4e0; color: #b45309; }
-.bad > .nt-ico { background: #ffe8e6; color: #c0221a; }
-.msg > .nt-ico { background: #eef2ff; color: #4f46e5; }
-.sign > .nt-ico { background: #fff1f0; color: var(--red); }
-.info > .nt-ico { background: #f1f2f4; color: #5c5f66; }
+.nk-ok > .nt-ico, .nk-money > .nt-ico { background: #e3f6ec; color: #0a8a4c; }
+.nk-warn > .nt-ico { background: #fff4e0; color: #b45309; }
+.nk-bad > .nt-ico { background: #ffe8e6; color: #c0221a; }
+.nk-msg > .nt-ico { background: #eef2ff; color: #4f46e5; }
+.nk-sign > .nt-ico { background: #fff1f0; color: var(--red); }
+.nk-info > .nt-ico { background: #f1f2f4; color: #5c5f66; }
 
 /* панель */
 .nt-panel { position: absolute; top: calc(100% + 10px); right: -8px; z-index: 60; width: 400px; max-width: calc(100vw - 24px); border-radius: 22px; background: rgba(255, 255, 255, .96); backdrop-filter: blur(14px); border: 1px solid var(--line); box-shadow: 0 30px 70px -20px rgba(14, 14, 16, .35); transform-origin: top right; overflow: hidden; }
@@ -48,7 +48,7 @@
 .nt-toasts { position: fixed; top: 76px; right: 20px; z-index: 300; display: flex; flex-direction: column; gap: 10px; width: 360px; max-width: calc(100vw - 32px); pointer-events: none; }
 .nt-toast { position: relative; overflow: hidden; pointer-events: auto; display: flex; gap: 12px; align-items: flex-start; padding: 14px 40px 16px 14px; border-radius: 18px; background: #fff; border: 1px solid var(--line); box-shadow: 0 20px 50px -18px rgba(14, 14, 16, .4); cursor: pointer; }
 .nt-toast::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--red); }
-.nt-toast.ok::before, .nt-toast.money::before { background: #0aa45a; } .nt-toast.warn::before { background: #f59e0b; } .nt-toast.bad::before { background: #e5291c; } .nt-toast.msg::before { background: #4f46e5; } .nt-toast.info::before { background: #9aa0a8; }
+.nt-toast.nk-ok::before, .nt-toast.nk-money::before { background: #0aa45a; } .nt-toast.nk-warn::before { background: #f59e0b; } .nt-toast.nk-bad::before { background: #e5291c; } .nt-toast.nk-msg::before { background: #4f46e5; } .nt-toast.nk-info::before { background: #9aa0a8; }
 .nt-toast-txt { flex: 1; min-width: 0; } .nt-toast-txt b { display: block; font-size: 14px; } .nt-toast-txt small { display: block; margin-top: 2px; font-size: 12.5px; color: var(--text-2); line-height: 1.4; }
 .nt-x { position: absolute; top: 10px; right: 10px; width: 24px; height: 24px; border: 0; border-radius: 8px; background: transparent; color: var(--text-3); display: grid; place-items: center; cursor: pointer; }
 .nt-x:hover { background: var(--surface-2); color: var(--text); }
