@@ -199,3 +199,6 @@
 /* ползунок не меняет толщину скачками — растёт только ручка, через transform */
 .wz2-slider .elastic-slider__thumb { transition: box-shadow .25s ease; }
 .wz2-slider:hover .elastic-slider__thumb { box-shadow: 0 0 0 6px rgba(239, 49, 36, .15); }
+/* ручка на краю выступает за полосу на полразмера + кольцо — оставляем место до иконок */
+.wz2-slider .elastic-slider__icon:first-child { margin-right: 12px; }
+.wz2-slider .elastic-slider__icon:last-child { margin-left: 12px; }
