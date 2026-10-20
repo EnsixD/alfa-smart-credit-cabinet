@@ -7,7 +7,7 @@ x-backend-env: &backend-env
   MOCK_GATEWAY_URL: http://mock-gateway:8081
   PIPELINE_STEP_DELAY_S: ${PIPELINE_STEP_DELAY_S:-1.5}
   LLM_ENABLED: ${LLM_ENABLED:-false}
-  LLM_URL: http://ollama:11434
+  LLM_URL: ${LLM_URL:-http://ollama:11434}
   LLM_MODEL: ${LLM_MODEL:-qwen2.5:1.5b}
 
 services:
@@ -37,6 +37,8 @@ services:
       db: {condition: service_healthy}
       mock-gateway: {condition: service_started}
     ports: ["8000:8000"]
+    # доступ к Ollama, запущенной на самом компьютере (вне Docker), в т.ч. на Linux
+    extra_hosts: ["host.docker.internal:host-gateway"]
     restart: unless-stopped
 
   worker:
