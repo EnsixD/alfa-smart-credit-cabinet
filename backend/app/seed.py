@@ -6,6 +6,7 @@
 
 from datetime import date, datetime, timedelta, timezone
 
+from .news_articles import article
 from .db import SessionLocal, init_db
 from .models import Company, News, Product, User
 from .security import hash_password
@@ -162,10 +163,24 @@ NEWS = [
 ]
 
 
+def sync_news(db) -> None:
+    """Обновляет тексты новостей в уже заполненной базе, не трогая остальные данные."""
+    changed = False
+    for _, _, title, summary, _ in NEWS:
+        body = article(title, summary)
+        for n in db.query(News).filter(News.title == title).all():
+            if n.body != body:
+                n.body = body
+                changed = True
+    if changed:
+        db.commit()
+
+
 def seed() -> None:
     init_db()
     with SessionLocal() as db:
         if db.query(User).count():
+            sync_news(db)
             return
         for p in PRODUCTS:
             db.add(Product(**p))
@@ -182,7 +197,7 @@ def seed() -> None:
                         can_sign=can_sign, company_id=companies[ckey].id if ckey else None))
         now = datetime.now(timezone.utc)
         for days, cat, title, summary, tags in NEWS:
-            db.add(News(title=title, summary=summary, body=summary + " Материал подготовлен для демонстрации (синтетический контент).",
+            db.add(News(title=title, summary=summary, body=article(title, summary),
                         category=cat, tags=tags, published_at=now - timedelta(days=days)))
         db.commit()
 
