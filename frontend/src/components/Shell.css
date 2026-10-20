@@ -1,16 +1,19 @@
 /* ====== Боковое меню кабинета ====== */
 .app .sidebar.sb { padding: 20px 14px 16px; gap: 0; background: linear-gradient(180deg, #fff 0%, #fbfbfc 100%); }
 .sb-label { display: block; padding: 4px 12px 8px; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-3); }
-.sb-nav { display: flex; flex-direction: column; gap: 2px; }
-.app .sidebar.sb .sb-link { position: relative; display: flex; align-items: center; gap: 12px; min-height: 44px; margin: 0; padding: 0 12px; border-radius: 12px; background: none; color: var(--text-2); font-size: 14.5px; font-weight: 600; text-decoration: none; transition: color .2s; }
+.sb-nav { position: relative; display: flex; flex-direction: column; gap: 4px; }
+.app .sidebar.sb .sb-link { position: relative; display: flex; align-items: center; gap: 12px; height: 60px; min-height: 60px; margin: 0; padding: 0 12px; border-radius: 14px; box-sizing: border-box; background: none; color: var(--text-2); font-size: 14.5px; font-weight: 600; text-decoration: none; transition: color .2s; }
 .app .sidebar.sb .sb-link:hover { color: var(--text); background: var(--surface-2); }
+.app .sidebar.sb .sb-link.active:hover { background: none; }
 .app .sidebar.sb .sb-link.active { background: none; color: var(--text); }
-.sb-active { position: absolute; inset: 0; border-radius: 12px; background: #fff; border: 1px solid var(--line); box-shadow: 0 6px 18px -10px rgba(14, 14, 16, .25); }
-.sb-active::before { content: ""; position: absolute; left: -14px; top: 10px; bottom: 10px; width: 3px; border-radius: 0 3px 3px 0; background: var(--red); }
+.sb-active { position: absolute; left: 0; right: 0; top: 0; height: 60px; z-index: 0; border-radius: 14px; background: #fff; border: 1px solid var(--line); box-shadow: 0 6px 18px -10px rgba(14, 14, 16, .25); }
+.sb-active::before { content: ""; position: absolute; left: -14px; top: 14px; bottom: 14px; width: 3px; border-radius: 0 3px 3px 0; background: var(--red); }
 .sb-ico, .sb-txt, .sb-link em { position: relative; z-index: 1; }
-.sb-ico { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; transition: background .2s, color .2s; }
+.sb-ico { flex: none; width: 38px; height: 38px; border-radius: 12px; background: var(--surface-2); display: grid; place-items: center; transition: background .2s, color .2s; }
 .sb-link.active .sb-ico { background: var(--red); color: #fff; box-shadow: 0 6px 14px -6px rgba(239, 49, 36, .8); }
-.sb-txt { flex: 1; }
+.sb-txt { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.2; }
+.sb-txt b { font-size: 15px; font-weight: 700; }
+.sb-txt small { margin-top: 2px; font-size: 11.5px; font-weight: 500; color: var(--text-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .sb-link em { min-width: 22px; height: 22px; padding: 0 6px; border-radius: 999px; display: grid; place-items: center; background: var(--surface-2); border: 1px solid var(--line); color: var(--text-2); font-style: normal; font-size: 11.5px; font-weight: 800; }
 .sb-link em.warn { background: #f59e0b; border-color: #f59e0b; color: #fff; }
 .sb-alert { margin-top: 14px; display: flex; gap: 10px; align-items: flex-start; width: 100%; padding: 12px; border-radius: 14px; border: 1px solid #fcd38a; background: linear-gradient(135deg, #fff8eb, #fff); color: #b45309; font: inherit; text-align: left; cursor: pointer; transition: box-shadow .2s; }
@@ -28,3 +31,5 @@
   .sb-active::before { display: none; }
   .app .sidebar.sb .sb-link { white-space: nowrap; }
 }
+
+@media (max-width: 900px) { .sb-active { display: none; } .sb-txt small { display: none; } .app .sidebar.sb .sb-link { height: 44px; min-height: 44px; } }
