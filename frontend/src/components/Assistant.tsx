@@ -17,6 +17,12 @@ export default function Assistant() {
   const end = useRef<HTMLDivElement>(null);
   const panel = useRef<HTMLDivElement>(null);
   useEffect(() => end.current?.scrollIntoView({ behavior: "smooth" }), [msgs, busy]);
+  // открыть помощника можно из любого места: window.dispatchEvent(new Event("assistant:open"))
+  useEffect(() => {
+    const h = () => setOpen(true);
+    window.addEventListener("assistant:open", h);
+    return () => window.removeEventListener("assistant:open", h);
+  }, []);
   useLayoutEffect(() => {
     if (open) replay(panel.current, "pop-in");
   }, [open]);
