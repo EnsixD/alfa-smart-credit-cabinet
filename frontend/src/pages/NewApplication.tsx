@@ -11,6 +11,7 @@ import ClickSpark from "../components/reactbits/ClickSpark";
 import Magnet from "../components/reactbits/Magnet";
 import Particles from "../components/reactbits/Particles";
 import ShinyText from "../components/reactbits/ShinyText";
+import ElasticSlider from "../components/reactbits/ElasticSlider";
 import SpotlightCard from "../components/reactbits/SpotlightCard";
 
 const STEPS = [
@@ -166,7 +167,6 @@ export default function NewApplication() {
   const canGo = (i: number) => view < 3 && i !== view && i < 3 && i <= reached && (i === 0 || !!app);
   const goTo = (i: number) => { if (!canGo(i)) return; setErr(""); if (view === 0) return toFinance(); if (i === 2 && !app?.product_code) return setStep(1); setStep(i); };
   const progress = (view / (STEPS.length - 1)) * 100;
-  const termPct = ((form.term_months - 1) / 83) * 100;
   const loadPct = fin.annual_revenue > 0 ? Math.min(100, Math.max(0, ((fin.annual_expenses || 0) / fin.annual_revenue) * 100)) : 0;
 
   return (
@@ -269,7 +269,7 @@ export default function NewApplication() {
                     </div>
                     <div className="wz2-term">
                       <div className="wz2-term-top"><span>Срок</span><motion.b key={form.term_months} initial={{ y: -6, opacity: 0 }} animate={{ y: 0, opacity: 1 }}>{months(form.term_months)}</motion.b></div>
-                      <input type="range" min={1} max={84} value={form.term_months} style={{ ["--p" as any]: `${termPct}%` }} onChange={(e) => set({ term_months: Number(e.target.value) })} aria-label="Срок кредита" />
+                      <ElasticSlider value={form.term_months} startingValue={1} maxValue={84} isStepped stepSize={1} onChange={(v) => setForm((f: any) => ({ ...f, term_months: Math.round(v) }))} onChangeEnd={(v) => set({ term_months: Math.round(v) })} valuePosition="none" thickness={8} activeThickness={14} rangeColor="#ef3124" trackColor="#e6e7ea" iconColor="#8e9199" thumb thumbColor="#ffffff" ariaLabel="Срок кредита" className="wz2-slider" />
                       <div className="wz2-ticks">{[["1 мес", 1], ["1 год", 12], ["3 года", 36], ["5 лет", 60], ["7 лет", 84]].map(([t, m]) => <button key={t} onClick={() => set({ term_months: m })} className={form.term_months === m ? "on" : ""}>{t}</button>)}</div>
                     </div>
                   </motion.section>
