@@ -859,3 +859,6 @@ main.container:has(.done-page) { padding-bottom: 24px; }
 /* карточки чуть прозрачнее, чтобы фон был виден между ними */
 .card, .feed, .done-steps { background: rgba(255, 255, 255, .86); backdrop-filter: blur(14px); }
 @media (prefers-reduced-motion: reduce) { .bg-anim i, .bg-anim::after { animation: none; } }
+
+/* упрощённые анимации из настроек кабинета */
+.reduce-motion *, .reduce-motion *::before, .reduce-motion *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }

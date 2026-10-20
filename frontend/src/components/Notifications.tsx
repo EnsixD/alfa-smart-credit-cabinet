@@ -17,6 +17,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import { api, poll } from "../api";
+import { getPrefs } from "../prefs";
 import "./Notifications.css";
 
 type Kind = "ok" | "money" | "warn" | "bad" | "msg" | "sign" | "info";
@@ -99,9 +100,9 @@ export default function Notifications() {
         // новые уведомления после первой загрузки показываем тостом и «звоним» колокольчиком
         if (known.current) {
           const added = list.filter((n) => !known.current!.has(n.id) && !n.read);
-          if (added.length) {
+          if (added.length) bell.start({ rotate: [0, -18, 15, -10, 6, 0], transition: { duration: 0.7 } });
+          if (added.length && getPrefs().toasts) {
             setToasts((t) => [...added.slice(0, 3), ...t].slice(0, 3));
-            bell.start({ rotate: [0, -18, 15, -10, 6, 0], transition: { duration: 0.7 } });
           }
         }
         known.current = new Set(list.map((n) => n.id));
