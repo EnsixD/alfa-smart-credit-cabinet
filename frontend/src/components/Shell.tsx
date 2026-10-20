@@ -67,22 +67,6 @@ export default function Shell() {
       <SiteHeader cabinet right={isClient ? <Notifications /> : undefined} />
       <div className="app-body">
         <aside className="sidebar sb">
-          <div className="sb-org">
-            <span className="sb-ava">{initials(isClient ? company?.name : user?.full_name)}</span>
-            <div>
-              <b>{isClient ? company?.name : "Кредитный отдел"}</b>
-              <small>{isClient ? (company?.inn ? `ИНН ${company.inn}` : "Клиент") : user?.position}</small>
-            </div>
-          </div>
-
-          {isClient && (
-            <ClickSpark sparkColor={["#ef3124", "#ff8a80"]} sparkCount={10} className="sb-new-wrap">
-              <button className="sb-new" onClick={() => nav("/cabinet/new")}>
-                <span><Plus size={16} strokeWidth={2.6} /></span> Новая заявка
-              </button>
-            </ClickSpark>
-          )}
-
           <span className="sb-label">{isClient ? "Кабинет" : "Банк"}</span>
           <nav className="sb-nav">
             {menu.map(([to, title, Icon, end]) => {
@@ -101,6 +85,13 @@ export default function Shell() {
               );
             })}
           </nav>
+          {isClient && (
+            <ClickSpark sparkColor={["#ef3124", "#ff8a80"]} sparkCount={10} className="sb-new-wrap">
+              <button className="sb-new" onClick={() => nav("/cabinet/new")}>
+                <span><Plus size={16} strokeWidth={2.6} /></span> Новая заявка
+              </button>
+            </ClickSpark>
+          )}
 
           {isClient && attention > 0 && (
             <motion.button className="sb-alert" onClick={() => nav("/cabinet")} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
@@ -116,10 +107,18 @@ export default function Shell() {
                 <div><b>Нужна помощь?</b><small>Спросите Помощника о заявке или продуктах</small></div>
               </button>
             )}
-            <div className="sb-user">
-              <span className="sb-ava small">{initials(user?.full_name)}</span>
-              <div><b>{user?.full_name}</b><small>{user?.position}</small></div>
-              <button onClick={() => { logout(); nav("/"); }} aria-label="Выйти" title="Выйти"><LogOut size={16} /></button>
+            <div className="sb-org">
+              <div className="sb-org-top">
+                <span className="sb-ava">{initials(isClient ? company?.name : user?.full_name)}</span>
+                <div>
+                  <b>{isClient ? company?.name : "Кредитный отдел"}</b>
+                  <small>{isClient ? (company?.inn ? `ИНН ${company.inn}` : "Клиент") : "Сотрудник банка"}</small>
+                </div>
+              </div>
+              <div className="sb-user">
+                <div><b>{user?.full_name}</b><small>{user?.position}</small></div>
+                <button onClick={() => { logout(); nav("/"); }} aria-label="Выйти" title="Выйти"><LogOut size={16} /></button>
+              </div>
             </div>
           </div>
         </aside>
