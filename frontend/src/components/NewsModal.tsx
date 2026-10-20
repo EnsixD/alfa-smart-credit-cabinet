@@ -38,7 +38,10 @@ export default function NewsModal({ item, all, ui, onClose, onOpen }: { item: an
   const next = item ? NEXT[item.category] || DEFAULT_NEXT : DEFAULT_NEXT;
   const u = item ? ui(item.category) : null;
   // текст из базы делим на абзацы по предложениям, чтобы он читался легче
-  const paragraphs = item ? String(item.body || "").split(/(?<=[.!?])\s+(?=[А-ЯA-Z«])/).reduce<string[]>((acc, s, i) => { if (i % 2 === 0) acc.push(s); else acc[acc.length - 1] += " " + s; return acc; }, []) : [];
+  const body = item ? String(item.body || "").trim() : "";
+  const paragraphs = body.includes("\n\n")
+    ? body.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean)
+    : body.split(/(?<=[.!?])\s+(?=[А-ЯA-Z«])/).reduce<string[]>((acc, s, i) => { if (i % 2 === 0) acc.push(s); else acc[acc.length - 1] += " " + s; return acc; }, []);
 
   return createPortal(
     <AnimatePresence>
