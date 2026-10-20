@@ -7,7 +7,7 @@ import {
   X,
   ArrowUpRight,
 } from "lucide-react";
-import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
+import { ReactNode, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 import { AnimatePresence, motion } from "motion/react";
@@ -56,20 +56,28 @@ export function Logo({
   );
 }
 
-/** Плавная прокрутка к разделу; если плавная прокрутка не сработала (вкладка в фоне) — мгновенная. */
+// пока идёт прокрутка после клика по меню, подсветку раздела не пересчитываем — иначе она «прыгает» по пути
+let navLockUntil = 0;
+export const navLocked = () => Date.now() < navLockUntil;
+
+/** Плавная прокрутка к разделу: верх раздела встаёт ровно под шапку. */
 export function scrollToId(id: string) {
   const el = document.getElementById(id);
   if (!el) return;
-  el.scrollIntoView({
-    behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
-      ? "auto"
-      : "smooth",
-    block: "start",
-  });
+  const header = (document.querySelector(".site-header") as HTMLElement | null)?.offsetHeight || 0;
+  const first = el.closest("main")?.querySelector("section[id]") === el;
+  const top = first ? 0 : Math.max(0, el.getBoundingClientRect().top + window.scrollY - header);
+  const smooth = !window.matchMedia("(prefers-reduced-motion: reduce)").matches && !document.documentElement.classList.contains("reduce-motion");
+  navLockUntil = Date.now() + (smooth ? 1200 : 100);
+  window.scrollTo({ top, behavior: smooth ? "smooth" : "auto" });
+  const done = () => { navLockUntil = 0; window.removeEventListener("scrollend", done); window.dispatchEvent(new Event("scroll")); };
+  window.addEventListener("scrollend", done);
+  // если вкладка в фоне и плавная прокрутка не дошла — довозим мгновенно
   setTimeout(() => {
-    if (Math.abs(el.getBoundingClientRect().top) > 80)
-      el.scrollIntoView({ block: "start" });
-  }, 800);
+    const now = el.getBoundingClientRect().top + window.scrollY - header;
+    if (!first && Math.abs(window.scrollY - now) > 4) window.scrollTo({ top: now });
+    done();
+  }, 1250);
 }
 
 /** Переход к разделу главной; с других страниц — сначала на главную. */
@@ -393,13 +401,18 @@ export default function SiteHeader({
   const nav = useNavigate();
   const go = useSectionNav();
   const [activeSection, setActiveSection] = useState("business");
+  const navRef = useRef<HTMLElement>(null);
+  const [pill, setPill] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
   useEffect(() => {
     if (cabinet) return;
     const update = () => {
+      if (navLocked()) return;
+      const header = (document.querySelector(".site-header") as HTMLElement | null)?.offsetHeight || 0;
       let current = "business";
       for (const [, id] of NAV) {
         const section = document.getElementById(id);
-        if (section && section.getBoundingClientRect().top <= window.innerHeight * .35) current = id;
+        // раздел активен, когда его верх дошёл до нижней кромки шапки (с небольшим запасом)
+        if (section && section.getBoundingClientRect().top <= header + 60) current = id;
       }
       setActiveSection(current);
     };
@@ -407,6 +420,16 @@ export default function SiteHeader({
     update();
     return () => window.removeEventListener("scroll", update);
   }, [cabinet]);
+  // подложка активного пункта: позиция и ширина берутся из самой кнопки
+  useLayoutEffect(() => {
+    const measure = () => {
+      const btn = navRef.current?.querySelector<HTMLElement>(`[data-section="${activeSection}"]`);
+      if (btn) setPill({ x: btn.offsetLeft, y: btn.offsetTop, w: btn.offsetWidth, h: btn.offsetHeight });
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [activeSection]);
   const [search, setSearch] = useState(false);
   const [mobile, setMobile] = useState(false);
   useEffect(() => {
@@ -426,11 +449,11 @@ export default function SiteHeader({
       <div className="sh-inner">
         <Logo to="/" />
         {!cabinet && (
-          <nav id="site-navigation" className="sh-nav vf-desktop-nav vf-clean-nav" aria-label="Главная навигация">
+          <nav id="site-navigation" ref={navRef} className="sh-nav vf-desktop-nav vf-clean-nav" aria-label="Главная навигация">
+            {pill && <motion.span className="vf-nav-active vf-nav-pill" initial={false} style={{ top: pill.y, height: pill.h }} animate={{ x: pill.x, width: pill.w }} transition={{ type: "spring", stiffness: 520, damping: 40 }} />}
             {NAV.map(([label, id]) => (
-              <button key={id} type="button" aria-current={activeSection === id ? "location" : undefined}
+              <button key={id} type="button" data-section={id} aria-current={activeSection === id ? "location" : undefined}
                 onClick={() => { setActiveSection(id); go(id); }}>
-                {activeSection === id && <motion.span className="vf-nav-active" layoutId="public-navigation" transition={{ duration: .3, ease: [.22, 1, .36, 1] }} />}
                 <span>{label}</span>
               </button>
             ))}

@@ -1868,3 +1868,7 @@
 .vx-hero .vx-secondary.vf-hero-action:hover { color:#d92a1e; background:#fff; border-color:#ef3124; box-shadow:0 0 20px #ef31240a; }
 .vx-hero .vf-hero-action:focus-visible { outline-color:#b9271f; }
 @media(max-width:900px) { .site-header .vf-clean-nav { display:none; } }
+/* одна подложка на всё меню: ездит по кнопкам и не зависит от прокрутки */
+.site-header .vf-clean-nav { position: relative; }
+.site-header .vf-clean-nav .vf-nav-pill { inset: auto; left: 0; }
+.site-header .vf-clean-nav button { position: relative; z-index: 1; }
