@@ -138,8 +138,7 @@
 .vf-hero-field {
   z-index: -3;
 }
-.vf-portfolio-grid {
-  display: block;
+.vf-field .threads-container {
   width: 100%;
   height: 100%;
 }
