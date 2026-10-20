@@ -1,8 +1,6 @@
 import {
   AlertTriangle,
   LifeBuoy,
-  LogOut,
-  Plus,
   BarChart3,
   Bell,
   CreditCard,
@@ -15,7 +13,6 @@ import {
 } from "lucide-react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
-import ClickSpark from "./reactbits/ClickSpark";
 import "./Shell.css";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { api, dt, poll } from "../api";
@@ -37,14 +34,9 @@ const BANK_MENU = [
   ["/bank/analytics", "Аналитика", BarChart3, false],
 ] as const;
 
-function initials(name = "") {
-  const w = name.replace(/[«»"]/g, "").replace(/^(ООО|ИП|АО|ПАО)\s+/i, "").split(/\s+/).filter(Boolean);
-  return ((w[0]?.[0] || "") + (w[1]?.[0] || "")).toUpperCase() || "В";
-}
-
 /** Каркас кабинета: шапка сайта + боковое меню + контент. */
 export default function Shell() {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const isClient = user?.role === "CLIENT";
   const loc = useLocation();
   const nav = useNavigate();
@@ -61,7 +53,6 @@ export default function Shell() {
   const attention = apps.filter((a) => a.open_tasks > 0 || ["APPROVED", "COUNTER_OFFER", "SIGNING"].includes(a.status.code)).length;
   const inWork = apps.filter((a) => !a.status.final && a.status.code !== "DRAFT").length;
   const badge = (to: string) => (to === "/cabinet/applications" ? (attention ? { n: attention, warn: true } : inWork ? { n: inWork, warn: false } : null) : null);
-  const company = user?.company;
   return (
     <div className="app">
       <SiteHeader cabinet right={isClient ? <Notifications /> : undefined} />
@@ -85,14 +76,6 @@ export default function Shell() {
               );
             })}
           </nav>
-          {isClient && (
-            <ClickSpark sparkColor={["#ef3124", "#ff8a80"]} sparkCount={10} className="sb-new-wrap">
-              <button className="sb-new" onClick={() => nav("/cabinet/new")}>
-                <span><Plus size={16} strokeWidth={2.6} /></span> Новая заявка
-              </button>
-            </ClickSpark>
-          )}
-
           {isClient && attention > 0 && (
             <motion.button className="sb-alert" onClick={() => nav("/cabinet")} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
               <AlertTriangle size={16} />
@@ -100,27 +83,14 @@ export default function Shell() {
             </motion.button>
           )}
 
-          <div className="sb-foot">
-            {isClient && (
+          {isClient && (
+            <div className="sb-foot">
               <button className="sb-help" onClick={() => window.dispatchEvent(new Event("assistant:open"))}>
                 <span className="sb-help-ico"><LifeBuoy size={16} /></span>
                 <div><b>Нужна помощь?</b><small>Спросите Помощника о заявке или продуктах</small></div>
               </button>
-            )}
-            <div className="sb-org">
-              <div className="sb-org-top">
-                <span className="sb-ava">{initials(isClient ? company?.name : user?.full_name)}</span>
-                <div>
-                  <b>{isClient ? company?.name : "Кредитный отдел"}</b>
-                  <small>{isClient ? (company?.inn ? `ИНН ${company.inn}` : "Клиент") : "Сотрудник банка"}</small>
-                </div>
-              </div>
-              <div className="sb-user">
-                <div><b>{user?.full_name}</b><small>{user?.position}</small></div>
-                <button onClick={() => { logout(); nav("/"); }} aria-label="Выйти" title="Выйти"><LogOut size={16} /></button>
-              </div>
             </div>
-          </div>
+          )}
         </aside>
         <main className="app-main" ref={main}>
           <Outlet />

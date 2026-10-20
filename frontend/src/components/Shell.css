@@ -1,16 +1,5 @@
 /* ====== Боковое меню кабинета ====== */
 .app .sidebar.sb { padding: 20px 14px 16px; gap: 0; background: linear-gradient(180deg, #fff 0%, #fbfbfc 100%); }
-.sb-org { padding: 10px; border-radius: 16px; background: var(--surface-2); border: 1px solid var(--line); }
-.sb-org-top { display: flex; align-items: center; gap: 10px; }
-.sb-org-top > div { min-width: 0; }
-.sb-org b { display: block; font-size: 13.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.sb-org small { display: block; font-size: 11.5px; color: var(--text-3); font-variant-numeric: tabular-nums; }
-.sb-ava { flex: none; width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; background: linear-gradient(135deg, #ff5447, #ef3124 60%, #c0221a); color: #fff; font-weight: 800; font-size: 13px; letter-spacing: .02em; box-shadow: 0 8px 18px -8px rgba(239, 49, 36, .8); }
-.sb-new-wrap { display: block; width: 100%; margin-top: 14px; }
-.sb-new { width: 100%; height: 46px; display: flex; align-items: center; justify-content: center; gap: 9px; border: 0; border-radius: 14px; background: var(--red); color: #fff; font: inherit; font-size: 14.5px; font-weight: 700; cursor: pointer; box-shadow: 0 12px 26px -12px rgba(239, 49, 36, .85); transition: background .2s, box-shadow .2s; }
-.sb-new:hover { background: var(--red-hover); box-shadow: 0 16px 30px -12px rgba(239, 49, 36, .95); }
-.sb-new span { width: 24px; height: 24px; border-radius: 8px; display: grid; place-items: center; background: rgba(255, 255, 255, .2); transition: transform .3s cubic-bezier(.2, .8, .2, 1); }
-.sb-new:hover span { transform: rotate(90deg); }
 .sb-label { display: block; padding: 4px 12px 8px; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-3); }
 .sb-nav { display: flex; flex-direction: column; gap: 2px; }
 .app .sidebar.sb .sb-link { position: relative; display: flex; align-items: center; gap: 12px; min-height: 44px; margin: 0; padding: 0 12px; border-radius: 12px; background: none; color: var(--text-2); font-size: 14.5px; font-weight: 600; text-decoration: none; transition: color .2s; }
@@ -33,13 +22,8 @@
 .sb-help:hover { transform: translateY(-1px); }
 .sb-help-ico { flex: none; width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; background: var(--red); }
 .sb-help b { display: block; font-size: 13px; } .sb-help small { display: block; font-size: 11.5px; line-height: 1.4; color: rgba(255, 255, 255, .6); }
-.sb-user { display: flex; align-items: center; gap: 8px; margin-top: 10px; padding: 10px 2px 0 4px; border-top: 1px solid var(--line); }
-.sb-user > div { flex: 1; min-width: 0; }
-.sb-user b { display: block; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .sb-user small { display: block; font-size: 11.5px; color: var(--text-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.sb-user button { flex: none; width: 32px; height: 32px; border: 0; border-radius: 10px; background: transparent; color: var(--text-3); display: grid; place-items: center; cursor: pointer; transition: background .2s, color .2s; }
-.sb-user button:hover { background: #fff1f0; color: var(--red); }
 @media (max-width: 900px) {
-  .sb-org, .sb-new-wrap, .sb-label, .sb-alert, .sb-foot { display: none; }
+  .sb-label, .sb-alert, .sb-foot { display: none; }
   .sb-nav { flex-direction: row; gap: 4px; }
   .sb-active::before { display: none; }
   .app .sidebar.sb .sb-link { white-space: nowrap; }
