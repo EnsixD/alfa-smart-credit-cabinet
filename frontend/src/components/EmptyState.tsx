@@ -63,14 +63,14 @@ export default function EmptyState({ kind, compact = false }: { kind: Kind; comp
       <div className="es-art" aria-hidden="true">
         <span className="es-ring r1" />
         <span className="es-ring r2" />
-        <motion.div className="es-card back" animate={{ y: [0, -6, 0], rotate: [-8, -6, -8] }} transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }} />
-        <motion.div className="es-card mid" animate={{ y: [0, -8, 0], rotate: [6, 8, 6] }} transition={{ duration: 4.4, repeat: Infinity, ease: "easeInOut", delay: 0.3 }} />
-        <motion.div className="es-card front" animate={{ y: [0, -10, 0] }} transition={{ duration: 3.8, repeat: Infinity, ease: "easeInOut" }}>
+        <motion.div className="es-card back" initial={{ opacity: 0, rotate: 0, x: 0 }} animate={{ opacity: 1, rotate: -8, x: -30 }} transition={{ duration: 0.6, delay: 0.15, ease: [0.2, 0.8, 0.2, 1] }} />
+        <motion.div className="es-card mid" initial={{ opacity: 0, rotate: 0, x: 0 }} animate={{ opacity: 1, rotate: 6, x: 26 }} transition={{ duration: 0.6, delay: 0.22, ease: [0.2, 0.8, 0.2, 1] }} />
+        <motion.div className="es-card front" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5, ease: [0.2, 0.8, 0.2, 1] }}>
           <span className="es-ico"><Icon size={26} /></span>
           <i /><i /><i className="short" />
         </motion.div>
-        <motion.span className="es-spark s1" animate={{ scale: [0.6, 1.1, 0.6], opacity: [0.3, 1, 0.3] }} transition={{ duration: 2.4, repeat: Infinity }} />
-        <motion.span className="es-spark s2" animate={{ scale: [0.6, 1.1, 0.6], opacity: [0.3, 1, 0.3] }} transition={{ duration: 2.4, repeat: Infinity, delay: 1.1 }} />
+        <motion.span className="es-spark s1" initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.5 }} />
+        <motion.span className="es-spark s2" initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.6 }} />
       </div>
       <div className="es-copy">
         <BlurText key={c.title} text={c.title} className="es-title" animateBy="words" direction="bottom" delay={70} trigger="load" />

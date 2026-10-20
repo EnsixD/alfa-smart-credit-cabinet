@@ -64,7 +64,7 @@ h3 { font-size: 16px; font-weight: 700; }
 .play { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; color: var(--red); background: #fff; box-shadow: 0 4px 14px rgba(239, 49, 36, .2); transition: transform .2s; }
 .play-link:hover .play { transform: scale(1.06); }
 .hero-art { display: flex; justify-content: center; }
-.hero-art img { width: 100%; max-width: 620px; mix-blend-mode: multiply; animation: floatY 6s ease-in-out infinite; }
+.hero-art img { width: 100%; max-width: 620px; mix-blend-mode: multiply; }
 @keyframes floatY { 50% { transform: translateY(-10px); } }
 .features { display: grid; grid-template-columns: repeat(4, 1fr); padding: 36px clamp(16px, 6vw, 96px); gap: 0; border-bottom: 1px solid var(--line); }
 .feature { display: flex; gap: 14px; padding: 8px 24px; border-left: 1px solid var(--line); }

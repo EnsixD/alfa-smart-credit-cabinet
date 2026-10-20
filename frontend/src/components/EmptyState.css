@@ -11,8 +11,8 @@
 .es-ring.r2 { width: 150px; height: 150px; border-style: solid; border-color: rgba(239, 49, 36, .12); }
 @keyframes esSpin { to { transform: rotate(360deg); } }
 .es-card { position: absolute; width: 112px; height: 136px; border-radius: 18px; background: #fff; border: 1px solid var(--line); box-shadow: 0 16px 40px -18px rgba(14, 14, 16, .35); }
-.es-card.back { background: #fde3e0; border-color: #fbd0cb; transform: translate(-30px, 6px); }
-.es-card.mid { background: #fff7f6; transform: translate(26px, 4px); }
+.es-card.back { background: #fde3e0; border-color: #fbd0cb; top: calc(50% - 62px); }
+.es-card.mid { background: #fff7f6; top: calc(50% - 64px); }
 .es-card.front { display: flex; flex-direction: column; gap: 8px; padding: 16px; }
 .es-card.front i { display: block; height: 7px; border-radius: 4px; background: #eceef1; }
 .es-card.front i.short { width: 55%; }
