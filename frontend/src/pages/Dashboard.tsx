@@ -37,6 +37,7 @@ import SpotlightCard from "../components/reactbits/SpotlightCard";
 import BlurText from "../components/reactbits/BlurText";
 import ShinyText from "../components/reactbits/ShinyText";
 import ClickSpark from "../components/reactbits/ClickSpark";
+import SmoothHeight from "../components/SmoothHeight";
 import "./Dashboard.css";
 
 export const PRODUCT_ICONS: Record<string, any> = {
@@ -111,6 +112,49 @@ function nextPayment(loans: any[]) {
   return best;
 }
 
+/** Витрина продуктов в hero: сама перелистывается, точки показывают таймер. */
+function Showcase() {
+  const [items, setItems] = useState<any[]>([]);
+  const [i, setI] = useState(0);
+  useEffect(() => { api("/api/catalog/products").then(setItems).catch(() => {}); }, []);
+  useEffect(() => {
+    if (items.length < 2) return;
+    const t = setTimeout(() => setI((x) => (x + 1) % items.length), 4500);
+    return () => clearTimeout(t);
+  }, [i, items.length]);
+  const p = items[i];
+  if (!p) return <div className="db-show skeleton-dark" />;
+  const Icon = PRODUCT_ICONS[p.code] || Wallet;
+  const short = (v: number) => (v >= 1e6 ? `${+(v / 1e6).toFixed(1)} млн ₽` : `${Math.round(v / 1e3)} тыс ₽`);
+  return (
+    <motion.div className="db-show" initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.25, duration: 0.5, ease: EASE }}>
+      <span className="db-show-label">Продукты для бизнеса</span>
+      <AnimatePresence mode="wait">
+        <motion.div key={p.code} className="db-show-body" initial={{ opacity: 0, x: 24, filter: "blur(6px)" }} animate={{ opacity: 1, x: 0, filter: "blur(0px)" }} exit={{ opacity: 0, x: -24, filter: "blur(6px)" }} transition={{ duration: 0.4, ease: EASE }}>
+          <span className="db-show-ico"><Icon size={22} /></span>
+          <b>{p.name}</b>
+          <p>{p.short}</p>
+          <div className="db-show-facts">
+            <div><small>Ставка</small><strong>от {p.base_rate}%</strong></div>
+            <div><small>Сумма</small><strong>до {short(p.max_amount)}</strong></div>
+            <div><small>Решение</small><strong>{p.decision_time}</strong></div>
+          </div>
+        </motion.div>
+      </AnimatePresence>
+      <div className="db-show-foot">
+        <div className="db-show-dots">
+          {items.map((x, k) => (
+            <button key={x.code} aria-label={x.name} className={k === i ? "on" : ""} onClick={() => setI(k)}>
+              {k === i && <motion.i key={i} initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 4.5, ease: "linear" }} />}
+            </button>
+          ))}
+        </div>
+        <Link to={`/cabinet/new`} className="db-show-go">Оформить <ArrowRight size={14} /></Link>
+      </div>
+    </motion.div>
+  );
+}
+
 function Hero({ active }: { active: any }) {
   return (
     <motion.section className="db-hero" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, ease: EASE }}>
@@ -140,15 +184,25 @@ function Hero({ active }: { active: any }) {
           <Link to={appLink(active)} className="db-hero-btn">Следить за заявкой <ArrowUpRight size={18} /></Link>
         </div>
       ) : (
-        <div className="db-hero-in">
-          <span className="db-eyebrow">Бизнес в движении</span>
-          <h2>Следующий шаг<br /><em>начинается здесь.</em></h2>
-          <p>Подберём финансирование под задачу бизнеса — решение от 5 минут, без запроса в бюро на этапе подбора.</p>
-          <ClickSpark sparkColor={["#ef3124", "#ff8a80", "#ffffff"]} sparkCount={12}>
-            <Link to="/cabinet/new" className="db-hero-btn">
-              <ShinyText text="Рассчитать кредит" color="#ffffff" shineColor="#ffd6d2" speed={3} /> <ArrowUpRight size={18} />
-            </Link>
-          </ClickSpark>
+        <div className="db-hero-in idle">
+          <div className="db-hero-copy">
+            <span className="db-eyebrow">Бизнес в движении</span>
+            <h2>Следующий шаг<br /><em>начинается здесь.</em></h2>
+            <p>Подберём финансирование под задачу бизнеса и покажем платёж до отправки заявки.</p>
+            <div className="db-hero-cta">
+              <ClickSpark sparkColor={["#ef3124", "#ff8a80", "#ffffff"]} sparkCount={12}>
+                <Link to="/cabinet/new" className="db-hero-btn">
+                  <ShinyText text="Рассчитать кредит" color="#ffffff" shineColor="#ffd6d2" speed={3} /> <ArrowUpRight size={18} />
+                </Link>
+              </ClickSpark>
+            </div>
+            <ul className="db-perks">
+              {[[Zap, "Решение от 5 минут"], [ShieldCheck, "Без запроса в БКИ при подборе"], [PenLine, "Подпись онлайн"]].map(([I, t]: any, i) => (
+                <motion.li key={t} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 + i * 0.08 }}><I size={14} /> {t}</motion.li>
+              ))}
+            </ul>
+          </div>
+          <Showcase />
         </div>
       )}
     </motion.section>
@@ -180,12 +234,13 @@ function News({ feed }: { feed: any[] }) {
     const ui = NEWS_UI[n.category] || { icon: Newspaper, tone: "slate" };
     const isOpen = open === n.id;
     return (
-      <motion.article layout key={n.id} className={"db-news " + ui.tone + (big ? " lead" : "") + (isOpen ? " open" : "")} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.97 }} transition={{ duration: 0.35, ease: EASE }} onClick={() => setOpen(isOpen ? null : n.id)}>
+      <motion.article key={n.id} className={"db-news " + ui.tone + (big ? " lead" : "") + (isOpen ? " open" : "")} variants={{ h: { opacity: 0, y: 14, scale: 0.98 }, s: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.4, ease: EASE } } }} onClick={() => setOpen(isOpen ? null : n.id)}>
+        {big && <span className="db-news-art" aria-hidden="true"><ui.icon size={120} strokeWidth={1.1} /></span>}
         <div className="db-news-top">
           <span className="db-tag"><ui.icon size={13} /> {n.category}</span>
           <small>{date(n)}</small>
         </div>
-        <motion.b layout="position">{n.title}</motion.b>
+        <b>{n.title}</b>
         <AnimatePresence initial={false} mode="wait">
           <motion.p key={isOpen ? "b" : "s"} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>{isOpen ? n.body : n.summary}</motion.p>
         </AnimatePresence>
@@ -207,12 +262,14 @@ function News({ feed }: { feed: any[] }) {
           </button>
         ))}
       </div>
-      <motion.div layout className="db-news-grid">
-        <AnimatePresence mode="popLayout">
-          {lead && card(lead, true)}
-          {rest.map((n) => card(n))}
+      <SmoothHeight>
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div key={cat} className="db-news-grid" initial="h" animate="s" exit="x" variants={{ h: {}, s: { transition: { staggerChildren: 0.05 } }, x: { opacity: 0, filter: "blur(4px)", transition: { duration: 0.18 } } }}>
+            {lead && card(lead, true)}
+            {rest.map((n) => card(n))}
+          </motion.div>
         </AnimatePresence>
-      </motion.div>
+      </SmoothHeight>
     </section>
   );
 }
