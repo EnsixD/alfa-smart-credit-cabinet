@@ -2,9 +2,8 @@
 Решение кейса «Альфа Хак» — цифровой кредитный конвейер для малого и микробизнеса
 
 Репозиторий:        https://github.com/EnsixD/alfa-smart-credit-cabinet
-Версия на дедлайн:  тег <ТЕГ>, коммит <HASH>
-Видеодемонстрация:  <ССЫЛКА НА ВИДЕО>
-Онлайн-версия:      <ССЫЛКА, если развёрнута>
+Версия на дедлайн:  тег v2.0.0 (https://github.com/EnsixD/alfa-smart-credit-cabinet/tree/v2.0.0)
+Видеодемонстрация:  demo.mp4 в этом архиве, а также в README репозитория
 
 ЗАПУСК ОДНОЙ КОМАНДОЙ
   Нужен Docker Desktop (Windows / macOS) или Docker Engine 24+ с Compose v2.

@@ -12,3 +12,7 @@ dist/
 *.pdf
 *.tsbuildinfo
 vektor-credit-cabinet-*.zip
+
+# демо-видео и исходники записи (большие файлы)
+videos/
+.claude/
