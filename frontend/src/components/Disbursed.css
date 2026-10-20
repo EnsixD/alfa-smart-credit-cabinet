@@ -1,0 +1,11 @@
+/* ---------- раскрытие оверлея выдачи из центра ---------- */
+.payout { background: transparent !important; animation: none !important; }
+.payout.closing { animation: none !important; }
+.payout-reveal { position: absolute; inset: 0; z-index: 0; background: radial-gradient(120% 90% at 50% 50%, #1d1d22 0%, #111114 60%, #0a0a0c 100%); will-change: clip-path; }
+.payout-reveal-field { position: absolute; inset: 0; }
+.payout-reveal-glow { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(40% 35% at 50% 45%, rgba(239, 49, 36, .28), transparent 70%); animation: payoutGlow 4s ease-in-out infinite alternate; }
+@keyframes payoutGlow { from { opacity: .55; transform: scale(1); } to { opacity: 1; transform: scale(1.08); } }
+.payout-wave { position: absolute; left: 50%; top: 50%; width: 40vmax; height: 40vmax; margin: -20vmax 0 0 -20vmax; border-radius: 50%; border: 2px solid rgba(239, 49, 36, .7); z-index: 0; pointer-events: none; }
+.payout-body, .payout-x { z-index: 2; }
+
+@media (prefers-reduced-motion: reduce) { .payout-reveal-glow { animation: none; } }

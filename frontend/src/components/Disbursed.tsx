@@ -1,3 +1,4 @@
+import "./Disbursed.css";
 import {
   ArrowRight,
   CalendarDays,
@@ -54,7 +55,7 @@ export function DisburseOverlay({
     setTimeout(() => {
       onClose();
       after?.();
-    }, 380);
+    }, 650);
   };
   useEffect(() => {
     const k = (e: KeyboardEvent) => e.key === "Escape" && close();
@@ -85,11 +86,40 @@ export function DisburseOverlay({
         }
       }}
     >
-      <BrandField className="vf-payout-field" bright />
+      {/* фон раскрывается кругом из центра экрана, при закрытии — схлопывается обратно */}
+      <motion.div
+        className="payout-reveal"
+        initial={{ clipPath: "circle(0% at 50% 50%)" }}
+        animate={{ clipPath: closing ? "circle(0% at 50% 50%)" : "circle(150% at 50% 50%)" }}
+        transition={closing ? { duration: 0.6, ease: [0.7, 0, 0.84, 0] } : { duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
+      >
+        <motion.div
+          className="payout-reveal-field"
+          initial={{ opacity: 0, scale: 1.15 }}
+          animate={{ opacity: closing ? 0 : 1, scale: 1 }}
+          transition={{ duration: 1.4, delay: closing ? 0 : 0.35, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <BrandField className="vf-payout-field" bright />
+        </motion.div>
+        <div className="payout-reveal-glow" />
+      </motion.div>
+      {[0, 1, 2].map((i) => (
+        <motion.span
+          key={i}
+          className="payout-wave"
+          initial={{ scale: 0, opacity: 0.55 }}
+          animate={{ scale: 4, opacity: 0 }}
+          transition={{ duration: 1.6, delay: 0.1 + i * 0.22, ease: [0.16, 1, 0.3, 1] }}
+        />
+      ))}
       <button className="payout-x" onClick={() => close()} aria-label="Закрыть">
         <X size={20} />
       </button>
-      <div className="payout-body">
+      <motion.div
+        className="payout-body"
+        animate={closing ? { opacity: 0, scale: 0.94, filter: "blur(6px)" } : {}}
+        transition={{ duration: 0.3 }}
+      >
         <div className="payout-check">
           <svg viewBox="0 0 24 24" width="56" height="56">
             <path d="M5 12.5l4.2 4.2L19 7" />
@@ -139,7 +169,7 @@ export function DisburseOverlay({
             <Home size={18} /> На главную
           </button>
         </div>
-      </div>
+      </motion.div>
     </div>,
     document.body,
   );
