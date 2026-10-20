@@ -1,0 +1,18 @@
+/* ====== Общие правки: фон при наведении всегда шире содержимого ====== */
+.app .app-row,
+.app .todo-row {
+  padding: 14px 16px;
+  margin: 0;
+  border-radius: 16px;
+  border-bottom: 0;
+  transition: background .2s ease, box-shadow .2s ease;
+}
+.app .app-row + .app-row,
+.app .todo-row + .todo-row { margin-top: 4px; }
+.app .app-row:hover,
+.app .todo-row:hover {
+  padding-left: 16px;
+  background: var(--surface-2);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+.app .block > .app-row:first-of-type { margin-top: 2px; }
