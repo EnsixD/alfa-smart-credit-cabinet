@@ -1,0 +1,56 @@
+/* ====== Уведомления: колокольчик, панель, тосты ====== */
+.nt-wrap { position: relative; }
+.nt-bell { position: relative; width: 40px; height: 40px; border: 0; border-radius: 12px; background: transparent; color: var(--text); display: grid; place-items: center; cursor: pointer; transition: background .2s; }
+.nt-bell:hover, .nt-bell.on { background: var(--surface-2); }
+.nt-badge { position: absolute; top: 3px; right: 2px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px; background: var(--red); color: #fff; font-size: 10.5px; font-weight: 800; display: grid; place-items: center; overflow: hidden; border: 2px solid #fff; box-sizing: content-box; box-shadow: 0 4px 10px -2px rgba(239, 49, 36, .6); }
+
+/* цвета типов */
+.nt-ico { flex: none; width: 36px; height: 36px; border-radius: 11px; display: grid; place-items: center; background: var(--surface-2); color: var(--text-2); }
+.ok > .nt-ico, .money > .nt-ico { background: #e3f6ec; color: #0a8a4c; }
+.warn > .nt-ico { background: #fff4e0; color: #b45309; }
+.bad > .nt-ico { background: #ffe8e6; color: #c0221a; }
+.msg > .nt-ico { background: #eef2ff; color: #4f46e5; }
+.sign > .nt-ico { background: #fff1f0; color: var(--red); }
+.info > .nt-ico { background: #f1f2f4; color: #5c5f66; }
+
+/* панель */
+.nt-panel { position: absolute; top: calc(100% + 10px); right: -8px; z-index: 60; width: 400px; max-width: calc(100vw - 24px); border-radius: 22px; background: rgba(255, 255, 255, .96); backdrop-filter: blur(14px); border: 1px solid var(--line); box-shadow: 0 30px 70px -20px rgba(14, 14, 16, .35); transform-origin: top right; overflow: hidden; }
+.nt-head { display: flex; align-items: center; justify-content: space-between; padding: 16px 16px 10px 18px; }
+.nt-head > div:first-child { display: flex; align-items: center; gap: 8px; } .nt-head b { font-size: 16px; }
+.nt-pill { padding: 3px 8px; border-radius: 999px; background: var(--red); color: #fff; font-size: 11px; font-weight: 800; }
+.nt-head-act { display: flex; gap: 4px; }
+.nt-head-act button { width: 32px; height: 32px; border: 0; border-radius: 10px; background: transparent; color: var(--text-3); display: grid; place-items: center; cursor: pointer; transition: background .2s, color .2s; }
+.nt-head-act button:hover { background: var(--surface-2); color: var(--text); }
+.nt-tabs { display: flex; gap: 4px; margin: 0 14px 6px; padding: 4px; border-radius: 12px; background: var(--surface-2); }
+.nt-tabs button { position: relative; flex: 1; height: 32px; border: 0; background: none; border-radius: 9px; font: inherit; font-size: 13px; font-weight: 600; color: var(--text-2); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
+.nt-tabs button > span:not(.nt-tab-bg), .nt-tabs small { position: relative; z-index: 1; }
+.nt-tabs small { font-size: 11px; color: var(--text-3); }
+.nt-tabs button[aria-selected="true"] { color: var(--text); }
+.nt-tab-bg { position: absolute; inset: 0; border-radius: 9px; background: #fff; box-shadow: 0 2px 8px rgba(14, 14, 16, .08); }
+.nt-list { max-height: min(460px, 65vh); overflow: auto; padding: 4px 8px 10px; }
+.nt-day { padding: 10px 10px 4px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--text-3); }
+.nt-item { position: relative; display: flex; gap: 12px; align-items: flex-start; padding: 11px 34px 11px 10px; border-radius: 14px; cursor: pointer; overflow: hidden; transition: background .2s; }
+.nt-item:hover { background: var(--surface-2); }
+.nt-item.new { background: #fff7f6; } .nt-item.new:hover { background: #fff0ee; }
+.nt-txt { flex: 1; min-width: 0; }
+.nt-txt b { display: block; font-size: 14px; line-height: 1.3; }
+.nt-txt p { margin: 2px 0 0; font-size: 12.5px; line-height: 1.4; color: var(--text-2); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.nt-txt small { display: block; margin-top: 4px; font-size: 11.5px; color: var(--text-3); }
+.nt-dot { position: absolute; top: 16px; right: 14px; width: 8px; height: 8px; border-radius: 50%; background: var(--red); box-shadow: 0 0 0 3px rgba(239, 49, 36, .15); transition: opacity .2s; }
+.nt-del { position: absolute; top: 10px; right: 8px; width: 26px; height: 26px; border: 0; border-radius: 8px; background: #fff; color: var(--text-3); display: grid; place-items: center; cursor: pointer; opacity: 0; box-shadow: 0 2px 6px rgba(14, 14, 16, .1); transition: opacity .2s, color .2s; }
+.nt-item:hover .nt-del { opacity: 1; } .nt-item:hover .nt-dot { opacity: 0; }
+.nt-del:hover { color: #e5291c; }
+.nt-empty { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; padding: 34px 24px 30px; }
+.nt-empty > span { width: 54px; height: 54px; border-radius: 18px; display: grid; place-items: center; background: var(--surface-2); color: var(--text-3); margin-bottom: 6px; }
+.nt-empty b { font-size: 15px; } .nt-empty small { font-size: 12.5px; color: var(--text-3); max-width: 260px; line-height: 1.45; }
+
+/* тосты */
+.nt-toasts { position: fixed; top: 76px; right: 20px; z-index: 300; display: flex; flex-direction: column; gap: 10px; width: 360px; max-width: calc(100vw - 32px); pointer-events: none; }
+.nt-toast { position: relative; overflow: hidden; pointer-events: auto; display: flex; gap: 12px; align-items: flex-start; padding: 14px 40px 16px 14px; border-radius: 18px; background: #fff; border: 1px solid var(--line); box-shadow: 0 20px 50px -18px rgba(14, 14, 16, .4); cursor: pointer; }
+.nt-toast::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--red); }
+.nt-toast.ok::before, .nt-toast.money::before { background: #0aa45a; } .nt-toast.warn::before { background: #f59e0b; } .nt-toast.bad::before { background: #e5291c; } .nt-toast.msg::before { background: #4f46e5; } .nt-toast.info::before { background: #9aa0a8; }
+.nt-toast-txt { flex: 1; min-width: 0; } .nt-toast-txt b { display: block; font-size: 14px; } .nt-toast-txt small { display: block; margin-top: 2px; font-size: 12.5px; color: var(--text-2); line-height: 1.4; }
+.nt-x { position: absolute; top: 10px; right: 10px; width: 24px; height: 24px; border: 0; border-radius: 8px; background: transparent; color: var(--text-3); display: grid; place-items: center; cursor: pointer; }
+.nt-x:hover { background: var(--surface-2); color: var(--text); }
+.nt-timer { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--red); opacity: .35; transform-origin: left; }
+@media (max-width: 520px) { .nt-panel { position: fixed; top: 64px; left: 12px; right: 12px; width: auto; } .nt-toasts { right: 16px; top: 70px; } }
