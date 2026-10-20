@@ -1,0 +1,18 @@
+# Режим разработки: фронтенд с hot reload — правки в frontend/src видны сразу.
+# Запуск: docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+# Открыть: http://localhost:8080
+services:
+  web:
+    image: node:20.18.1-alpine
+    build: !reset null
+    working_dir: /web
+    command: sh -c "npm ci --no-audit --no-fund && npx vite --host 0.0.0.0 --port 80"
+    environment:
+      API_PROXY: http://api:8000
+    volumes:
+      - ./frontend:/web
+      - web_node_modules:/web/node_modules
+    ports: !override ["8080:80"]
+
+volumes:
+  web_node_modules:
