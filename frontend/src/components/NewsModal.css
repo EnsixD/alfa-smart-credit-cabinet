@@ -1,0 +1,40 @@
+/* ====== Модальное окно новости ====== */
+.nm-backdrop { position: fixed; inset: 0; z-index: 400; display: grid; place-items: center; padding: 24px; background: rgba(11, 11, 13, .45); backdrop-filter: blur(6px); }
+.nm { --c: #475569; --bg: #eef1f5; position: relative; width: min(760px, 100%); max-height: calc(100vh - 48px); overflow: auto; border-radius: 28px; background: #fff; box-shadow: 0 40px 100px -30px rgba(11, 11, 13, .55); outline: none; }
+.nm.red { --c: #ef3124; --bg: #fff1f0; } .nm.green { --c: #0aa45a; --bg: #e3f6ec; } .nm.amber { --c: #d97706; --bg: #fff4e0; } .nm.blue { --c: #2563eb; --bg: #eaf1ff; } .nm.violet { --c: #7c3aed; --bg: #f3edff; } .nm.slate { --c: #475569; --bg: #eef1f5; }
+.nm-x { position: sticky; top: 16px; float: right; margin: 16px 16px 0 0; z-index: 3; width: 40px; height: 40px; border: 0; border-radius: 14px; background: rgba(255, 255, 255, .85); backdrop-filter: blur(6px); color: var(--text); display: grid; place-items: center; cursor: pointer; box-shadow: 0 4px 14px rgba(11, 11, 13, .1); transition: background .2s, transform .2s; }
+.nm-x:hover { background: #fff; transform: rotate(90deg); }
+.nm-cover { position: relative; overflow: hidden; padding: 34px 36px 28px; background: linear-gradient(150deg, var(--bg), #fff 75%); border-bottom: 1px solid var(--line); }
+.nm-art { position: absolute; right: -20px; bottom: -40px; color: var(--c); opacity: .1; pointer-events: none; }
+.nm-tag { position: relative; display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 999px; background: #fff; color: var(--c); font-size: 12.5px; font-weight: 700; box-shadow: 0 2px 8px rgba(11, 11, 13, .06); }
+.nm-tag.small { padding: 3px 8px; font-size: 11px; box-shadow: none; background: var(--bg); }
+.nm-cover h2 { position: relative; margin: 16px 0 14px; max-width: 600px; font-size: clamp(24px, 3.2vw, 32px); font-weight: 800; letter-spacing: -.025em; line-height: 1.15; }
+.nm-meta { position: relative; display: flex; flex-wrap: wrap; gap: 14px; font-size: 13px; color: var(--text-3); }
+.nm-meta span { display: inline-flex; align-items: center; gap: 6px; }
+.nm-body { padding: 28px 36px 34px; display: flex; flex-direction: column; gap: 14px; }
+.nm-body > p { margin: 0; font-size: 15.5px; line-height: 1.7; color: var(--text-2); }
+.nm-body > .nm-lead { font-size: 18px; line-height: 1.55; color: var(--text); font-weight: 500; padding-left: 16px; border-left: 3px solid var(--c); }
+.nm-why { margin-top: 6px; padding: 16px; border-radius: 18px; background: var(--surface-2); }
+.nm-why b { display: flex; align-items: center; gap: 7px; font-size: 13.5px; margin-bottom: 10px; } .nm-why b svg { color: var(--c); }
+.nm-why div { display: flex; flex-wrap: wrap; gap: 6px; }
+.nm-why span { padding: 5px 10px; border-radius: 10px; background: #fff; border: 1px solid var(--line); font-size: 12.5px; color: var(--text-2); }
+.nm-next { display: grid; grid-template-columns: 42px 1fr auto; gap: 14px; align-items: center; padding: 18px; border-radius: 20px; background: linear-gradient(135deg, #1f1f24, #0e0e11); color: #fff; }
+.nm-next-ico { width: 42px; height: 42px; border-radius: 13px; display: grid; place-items: center; background: var(--red); }
+.nm-next b { font-size: 15px; } .nm-next p { margin: 3px 0 0; font-size: 13px; line-height: 1.45; color: rgba(255, 255, 255, .7); }
+.nm-btn { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 16px; border-radius: 14px; background: var(--red); color: #fff; font-weight: 700; font-size: 14px; text-decoration: none; white-space: nowrap; transition: background .2s; }
+.nm-btn:hover { background: var(--red-hover); } .nm-btn svg { transition: transform .25s; } .nm-btn:hover svg { transform: translateX(3px); }
+.nm-hint { display: flex; align-items: center; gap: 7px; font-size: 13px !important; color: var(--text-3) !important; }
+.nm-related > b { display: block; font-size: 15px; margin: 6px 0 10px; }
+.nm-related > div { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.nm-rel { --c: #475569; --bg: #eef1f5; position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; padding: 14px 40px 14px 14px; border-radius: 16px; border: 1px solid var(--line); background: #fff; font: inherit; text-align: left; color: var(--text); cursor: pointer; transition: border-color .2s, box-shadow .2s; }
+.nm-rel.red { --c: #ef3124; --bg: #fff1f0; } .nm-rel.green { --c: #0aa45a; --bg: #e3f6ec; } .nm-rel.amber { --c: #d97706; --bg: #fff4e0; } .nm-rel.blue { --c: #2563eb; --bg: #eaf1ff; } .nm-rel.violet { --c: #7c3aed; --bg: #f3edff; }
+.nm-rel:hover { border-color: color-mix(in srgb, var(--c) 40%, var(--line)); box-shadow: 0 12px 28px -18px color-mix(in srgb, var(--c) 70%, transparent); }
+.nm-rel strong { font-size: 14px; line-height: 1.35; }
+.nm-rel .go { position: absolute; right: 14px; bottom: 14px; color: var(--text-3); transition: transform .25s, color .25s; }
+.nm-rel:hover .go { transform: translateX(3px); color: var(--c); }
+@media (max-width: 640px) {
+  .nm-backdrop { padding: 0; align-items: end; }
+  .nm { max-height: 92vh; border-radius: 24px 24px 0 0; }
+  .nm-cover, .nm-body { padding-left: 20px; padding-right: 20px; }
+  .nm-next { grid-template-columns: 1fr; } .nm-related > div { grid-template-columns: 1fr; }
+}

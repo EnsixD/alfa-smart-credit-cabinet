@@ -38,6 +38,7 @@ import BlurText from "../components/reactbits/BlurText";
 import ShinyText from "../components/reactbits/ShinyText";
 import ClickSpark from "../components/reactbits/ClickSpark";
 import SmoothHeight from "../components/SmoothHeight";
+import NewsModal from "../components/NewsModal";
 import "./Dashboard.css";
 
 export const PRODUCT_ICONS: Record<string, any> = {
@@ -226,26 +227,23 @@ function Metric({ icon: Icon, label, value, format, to, linkText, sub, i }: { ic
 function News({ feed }: { feed: any[] }) {
   const cats = Array.from(new Set(feed.map((n) => n.category)));
   const [cat, setCat] = useState("all");
-  const [open, setOpen] = useState<number | null>(null);
+  const [open, setOpen] = useState<any | null>(null);
   const list = feed.filter((n) => cat === "all" || n.category === cat).slice(0, 7);
   const [lead, ...rest] = list;
   const date = (n: any) => new Date(n.published_at).toLocaleDateString("ru-RU", { day: "numeric", month: "long" });
   const card = (n: any, big = false) => {
     const ui = NEWS_UI[n.category] || { icon: Newspaper, tone: "slate" };
-    const isOpen = open === n.id;
     return (
-      <motion.article key={n.id} className={"db-news " + ui.tone + (big ? " lead" : "") + (isOpen ? " open" : "")} variants={{ h: { opacity: 0, y: 14, scale: 0.98 }, s: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.4, ease: EASE } } }} onClick={() => setOpen(isOpen ? null : n.id)}>
+      <motion.article key={n.id} className={"db-news " + ui.tone + (big ? " lead" : "") + ""} variants={{ h: { opacity: 0, y: 14, scale: 0.98 }, s: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.4, ease: EASE } } }} onClick={() => setOpen(n)} role="button" tabIndex={0} onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), setOpen(n))}>
         {big && <span className="db-news-art" aria-hidden="true"><ui.icon size={120} strokeWidth={1.1} /></span>}
         <div className="db-news-top">
           <span className="db-tag"><ui.icon size={13} /> {n.category}</span>
           <small>{date(n)}</small>
         </div>
         <b>{n.title}</b>
-        <AnimatePresence initial={false} mode="wait">
-          <motion.p key={isOpen ? "b" : "s"} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>{isOpen ? n.body : n.summary}</motion.p>
-        </AnimatePresence>
+        <p>{n.summary}</p>
         <div className="db-why">{n.why.map((w: string) => <span key={w}>{w}</span>)}</div>
-        <span className="db-news-more">{isOpen ? "Свернуть" : "Читать"} <ArrowRight size={14} /></span>
+        <span className="db-news-more">Читать подробнее <ArrowRight size={14} /></span>
       </motion.article>
     );
   };
@@ -256,7 +254,7 @@ function News({ feed }: { feed: any[] }) {
       </div>
       <div className="db-cats" role="tablist">
         {["all", ...cats].map((c) => (
-          <button key={c} role="tab" aria-selected={cat === c} onClick={() => { setCat(c); setOpen(null); }}>
+          <button key={c} role="tab" aria-selected={cat === c} onClick={() => setCat(c)}>
             {cat === c && <motion.span layoutId="db-cat" className="db-cat-bg" transition={{ type: "spring", stiffness: 500, damping: 36 }} />}
             <span>{c === "all" ? "Все" : c}</span>
           </button>
@@ -270,6 +268,7 @@ function News({ feed }: { feed: any[] }) {
           </motion.div>
         </AnimatePresence>
       </SmoothHeight>
+      <NewsModal item={open} all={feed} ui={(c) => NEWS_UI[c] || { icon: Newspaper, tone: "slate" }} onClose={() => setOpen(null)} onOpen={setOpen} />
     </section>
   );
 }
