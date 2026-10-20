@@ -1,4 +1,4 @@
-import { AlertTriangle, ArrowLeft, ArrowRight, Building2, Check, CircleCheck, Clock, FileCheck2, FileText, Lock, Loader, MessageSquare, PartyPopper, PiggyBank, Rocket, Search, ShieldCheck, ShoppingCart, Sparkles, Truck, UploadCloud, Wallet, BarChart3, Send } from "lucide-react";
+import { Eye, Home, AlertTriangle, ArrowLeft, ArrowRight, Building2, Check, CircleCheck, Clock, FileCheck2, FileText, Lock, Loader, MessageSquare, PartyPopper, PiggyBank, Rocket, Search, ShieldCheck, ShoppingCart, Sparkles, Truck, UploadCloud, Wallet, BarChart3, Send } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -8,7 +8,6 @@ import { useAuth } from "../auth";
 import { PRODUCT_ICONS } from "./Dashboard";
 import BlurText from "../components/reactbits/BlurText";
 import ClickSpark from "../components/reactbits/ClickSpark";
-import Magnet from "../components/reactbits/Magnet";
 import Particles from "../components/reactbits/Particles";
 import ShinyText from "../components/reactbits/ShinyText";
 import TermSlider from "../components/TermSlider";
@@ -405,14 +404,20 @@ export default function NewApplication() {
                         <motion.li variants={item} key={String(t)} className={on ? "on" : ""}><span>{on ? <Loader size={13} className="spin-ico" /> : i + 1}</span><b>{t}</b><small>{h}</small></motion.li>
                       ))}
                     </motion.ol>
-                    <div className="wz2-sent-actions">
-                      <Magnet padding={30} magnetStrength={5}>
-                        <ClickSpark sparkColor={["#ef3124", "#ff8a80"]} sparkCount={12}>
-                          <Link to={`/cabinet/applications/${sent.id}`} className="wz2-primary">Следить за заявкой <ArrowRight size={17} /></Link>
-                        </ClickSpark>
-                      </Magnet>
-                      <Link to="/cabinet" className="wz2-secondary">На главную</Link>
-                    </div>
+                    <motion.div className="wz2-sent-actions" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7, duration: 0.4 }}>
+                      <ClickSpark sparkColor={["#ef3124", "#ff8a80"]} sparkCount={12} className="wz2-sent-btn">
+                        <Link to={`/cabinet/applications/${sent.id}`} className="wz2-cta">
+                          <span className="wz2-cta-ico"><Eye size={18} /></span>
+                          <span className="wz2-cta-txt"><b>Следить за заявкой</b><small>Статусы и проверки</small></span>
+                          <ArrowRight size={18} className="wz2-cta-arrow" />
+                        </Link>
+                      </ClickSpark>
+                      <Link to="/cabinet" className="wz2-cta ghost">
+                        <span className="wz2-cta-ico"><Home size={18} /></span>
+                        <span className="wz2-cta-txt"><b>На главную</b><small>Кабинет компании</small></span>
+                        <ArrowRight size={18} className="wz2-cta-arrow" />
+                      </Link>
+                    </motion.div>
                     <div className="wz2-note"><MessageSquare size={15} /> Статус обновляется в кабинете в реальном времени</div>
                   </motion.div>
                 </div>

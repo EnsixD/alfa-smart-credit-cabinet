@@ -4,7 +4,6 @@ import { motion } from "motion/react";
 import { Link } from "react-router-dom";
 import BlurText from "./reactbits/BlurText";
 import ClickSpark from "./reactbits/ClickSpark";
-import Magnet from "./reactbits/Magnet";
 import Particles from "./reactbits/Particles";
 import ShinyText from "./reactbits/ShinyText";
 
@@ -77,7 +76,6 @@ export default function EmptyState({ kind, compact = false }: { kind: Kind; comp
         <motion.p initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35, duration: 0.45 }}>{c.text}</motion.p>
         {c.cta && (
           <motion.div className="es-actions" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.45 }}>
-            <Magnet padding={40} magnetStrength={6}>
               <ClickSpark sparkColor={["#ef3124", "#ff8a80"]} sparkCount={10} sparkRadius={26}>
                 <Link to="/cabinet/new" className="es-cta">
                   <Zap size={17} />
@@ -85,7 +83,6 @@ export default function EmptyState({ kind, compact = false }: { kind: Kind; comp
                   <ArrowRight size={17} className="es-arrow" />
                 </Link>
               </ClickSpark>
-            </Magnet>
             <span className="es-meta">≈ 5 минут · решение до 1 дня</span>
           </motion.div>
         )}

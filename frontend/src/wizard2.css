@@ -194,3 +194,23 @@
 .wz2-step.go:hover .wz2-dot { border-color: var(--red); }
 .wz2-step.done.go small { color: var(--red); font-weight: 600; }
 
+
+/* кнопки «Заявка отправлена»: две равные карточки-кнопки, без следования за курсором */
+.wz2-sent-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: left; }
+.wz2-sent-btn { display: block; }
+.wz2-cta { position: relative; overflow: hidden; display: flex; align-items: center; gap: 12px; height: 64px; padding: 0 18px 0 12px; border-radius: 18px; background: var(--red); color: #fff; text-decoration: none; box-shadow: 0 14px 30px -14px rgba(239, 49, 36, .8); transition: background .25s ease, box-shadow .25s ease, border-color .25s ease; }
+.wz2-cta::before { content: ""; position: absolute; top: 0; bottom: 0; left: -60%; width: 45%; background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .35), transparent); transform: skewX(-20deg); transition: left .6s ease; pointer-events: none; }
+.wz2-cta:hover::before { left: 120%; }
+.wz2-cta:hover { background: var(--red-hover); box-shadow: 0 18px 36px -14px rgba(239, 49, 36, .9); }
+.wz2-cta-ico { flex: none; width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; background: rgba(255, 255, 255, .18); transition: background .25s; }
+.wz2-cta-txt { flex: 1; display: flex; flex-direction: column; line-height: 1.2; }
+.wz2-cta-txt b { font-size: 15px; } .wz2-cta-txt small { font-size: 12px; opacity: .75; }
+.wz2-cta-arrow { flex: none; transition: transform .3s cubic-bezier(.2, .8, .2, 1); }
+.wz2-cta:hover .wz2-cta-arrow { transform: translateX(4px); }
+.wz2-cta.ghost { background: #fff; color: var(--text); border: 1px solid var(--line-strong); box-shadow: none; }
+.wz2-cta.ghost::before { background: linear-gradient(100deg, transparent, rgba(239, 49, 36, .08), transparent); }
+.wz2-cta.ghost .wz2-cta-ico { background: var(--surface-2); color: var(--text-2); }
+.wz2-cta.ghost:hover { background: #fff; border-color: var(--text-3); }
+.wz2-cta.ghost:hover .wz2-cta-ico { background: var(--red-tint, #fff1f0); color: var(--red); }
+.wz2-cta.ghost .wz2-cta-txt small { color: var(--text-3); opacity: 1; }
+@media (max-width: 640px) { .wz2-sent-actions { grid-template-columns: 1fr; } }
