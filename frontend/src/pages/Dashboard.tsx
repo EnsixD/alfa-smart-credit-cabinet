@@ -1,3 +1,4 @@
+import EmptyState from "../components/EmptyState";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -206,12 +207,7 @@ export default function Dashboard() {
           </Link>
         </div>
         {apps && list.length === 0 && (
-          <div className="empty-row">
-            Заявок пока нет.{" "}
-            <Link to="/cabinet/new" className="link-sm">
-              Подобрать кредит
-            </Link>
-          </div>
+          <EmptyState kind="applications" compact />
         )}
         {list.slice(0, 5).map((a) => (
           <AppRow key={a.id} a={a} />

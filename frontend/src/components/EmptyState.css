@@ -1,0 +1,38 @@
+/* ---------- пустые состояния ---------- */
+.es { position: relative; overflow: hidden; display: grid; grid-template-columns: 220px 1fr; align-items: center; gap: 40px; padding: 44px 48px; border-radius: 24px; background: radial-gradient(80% 120% at 0% 0%, #fff4f3 0%, #fff 55%); border: 1px solid var(--line); box-shadow: 0 1px 2px rgba(14, 14, 16, .04), 0 18px 50px -24px rgba(239, 49, 36, .25); }
+.block > .es { border: 0; box-shadow: none; background: radial-gradient(80% 120% at 0% 0%, #fff4f3 0%, transparent 60%); }
+.es-compact { grid-template-columns: 140px 1fr; gap: 28px; padding: 28px 32px; }
+.es-particles { position: absolute; inset: 0; opacity: .55; pointer-events: auto; }
+.es-art, .es-copy { position: relative; z-index: 1; }
+.es-art { height: 200px; display: grid; place-items: center; }
+.es-compact .es-art { height: 130px; transform: scale(.68); }
+.es-ring { position: absolute; border-radius: 50%; border: 1px dashed rgba(239, 49, 36, .25); }
+.es-ring.r1 { width: 200px; height: 200px; animation: esSpin 30s linear infinite; }
+.es-ring.r2 { width: 150px; height: 150px; border-style: solid; border-color: rgba(239, 49, 36, .12); }
+@keyframes esSpin { to { transform: rotate(360deg); } }
+.es-card { position: absolute; width: 112px; height: 136px; border-radius: 18px; background: #fff; border: 1px solid var(--line); box-shadow: 0 16px 40px -18px rgba(14, 14, 16, .35); }
+.es-card.back { background: #fde3e0; border-color: #fbd0cb; transform: translate(-30px, 6px); }
+.es-card.mid { background: #fff7f6; transform: translate(26px, 4px); }
+.es-card.front { display: flex; flex-direction: column; gap: 8px; padding: 16px; }
+.es-card.front i { display: block; height: 7px; border-radius: 4px; background: #eceef1; }
+.es-card.front i.short { width: 55%; }
+.es-ico { width: 46px; height: 46px; border-radius: 14px; display: grid; place-items: center; color: #fff; background: linear-gradient(135deg, #ff5447, #ef3124 60%, #c0221a); box-shadow: 0 10px 24px -8px rgba(239, 49, 36, .6); margin-bottom: 4px; }
+.es-spark { position: absolute; width: 10px; height: 10px; border-radius: 50%; background: var(--red); box-shadow: 0 0 16px rgba(239, 49, 36, .7); }
+.es-spark.s1 { top: 22px; right: 26px; } .es-spark.s2 { bottom: 26px; left: 22px; width: 7px; height: 7px; }
+.es-title { font-size: 28px; font-weight: 800; letter-spacing: -.02em; line-height: 1.15; margin: 0 0 10px; color: var(--text); display: flex; flex-wrap: wrap; }
+.es-compact .es-title { font-size: 21px; }
+.es-copy p { margin: 0 0 22px; max-width: 520px; color: var(--text-2); font-size: 15px; line-height: 1.55; }
+.es-compact .es-copy p { font-size: 14px; margin-bottom: 16px; }
+.es-actions { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+.es-cta { display: inline-flex; align-items: center; gap: 10px; height: 52px; padding: 0 24px; border-radius: 16px; background: var(--red); color: #fff; font-weight: 700; font-size: 16px; text-decoration: none; box-shadow: 0 14px 30px -12px rgba(239, 49, 36, .75); transition: background .2s, box-shadow .2s; }
+.es-cta:hover { background: var(--red-hover); box-shadow: 0 18px 38px -12px rgba(239, 49, 36, .9); }
+.es-cta .es-arrow { transition: transform .25s; } .es-cta:hover .es-arrow { transform: translateX(4px); }
+.es-meta { color: var(--text-3); font-size: 13px; }
+.es-quick { margin-top: 26px; }
+.es-quick small { display: block; color: var(--text-3); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; font-weight: 700; margin-bottom: 10px; }
+.es-quick > div { display: flex; flex-wrap: wrap; gap: 8px; }
+.es-chip { display: inline-flex; align-items: center; gap: 7px; padding: 9px 14px; border-radius: 999px; background: #fff; border: 1px solid var(--line-strong); color: var(--text); font-size: 13.5px; font-weight: 600; text-decoration: none; transition: border-color .2s, color .2s, transform .2s; }
+.es-chip:hover { border-color: var(--red); color: var(--red); transform: translateY(-2px); }
+@media (max-width: 760px) { .es, .es-compact { grid-template-columns: 1fr; padding: 28px 20px; gap: 12px; text-align: center; } .es-actions, .es-quick > div { justify-content: center; } .es-title { justify-content: center; } .es-copy p { margin-inline: auto; } .es-art { height: 170px; } }
+
+@media (prefers-reduced-motion: reduce) { .es-ring.r1 { animation: none; } }

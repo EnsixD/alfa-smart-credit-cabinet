@@ -1,3 +1,4 @@
+import EmptyState from "../components/EmptyState";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -88,7 +89,7 @@ export function ApplicationsList() {
           transition={{ duration: 0.22 }}
         >
           {apps && list.length === 0 && (
-            <div className="empty-row">Здесь пока пусто.</div>
+            <EmptyState kind={(apps || []).length ? "filter" : "applications"} compact={(apps || []).length > 0} />
           )}
           {list.map((a) => (
             <AppRow key={a.id} a={a} />
@@ -121,14 +122,7 @@ export function LoansPage() {
         </div>
       )}
       {data && !loans.length && (
-        <section className="block">
-          <div className="empty-row">
-            Действующих кредитов пока нет.{" "}
-            <Link to="/cabinet/new" className="link-sm">
-              Подобрать кредит
-            </Link>
-          </div>
-        </section>
+        <EmptyState kind="loans" />
       )}
       <div className="cr-loan-list">
         {loans.map((l: any) => (
@@ -202,9 +196,7 @@ export function DocumentsPage() {
     >
       <section className="block reveal">
         {docs && docs.length === 0 && (
-          <div className="empty-row">
-            Документов пока нет — они появятся, когда вы загрузите их в заявке.
-          </div>
+          <EmptyState kind="documents" />
         )}
         {(docs || []).map((d) => (
           <div key={d.id} className="app-row">
